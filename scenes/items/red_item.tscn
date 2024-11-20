@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bn8f20vhd1rly"]
+
+[ext_resource type="Texture2D" uid="uid://clkmw24o03f47" path="res://assets/sprites/items/red.png" id="1_44eux"]
+[ext_resource type="PackedScene" uid="uid://xykxthd6dwcm" path="res://scenes/items/item.tscn" id="1_eqccq"]
+
+[node name="red_item" instance=ExtResource("1_eqccq")]
+color = "red"
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("1_44eux")
