@@ -19,13 +19,9 @@ var possible_items = [
 # Current items on the scene
 var all_items = [];
 
-# Touch variables
-var first_touch = Vector2(0, 0);
-var final_touch = Vector2(0, 0);
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print("Start the game")
+	print("Starting the game");
 	randomize();
 	all_items = make_2d_array();
 	spawn_items();
@@ -53,9 +49,16 @@ func spawn_items():
 				rand = randi_range(0, possible_items.size()-1);
 				loops += 1;
 				item = possible_items[rand].instantiate();
+			#print("Item at grid position: ", i, j, "Pixel position: ", grid_to_pixel(i, j))	# DEBUG
+			
+			# Set the grid_node property before adding to the scene
+			item.set("grid_node", self);
+			
 #			Create item if no match around
 			add_child(item);
 			item.set_position(grid_to_pixel(i, j));
+			# Pass a reference to the grid to the item
+			item.set("grid_node", self)  # Set the grid_node property dynamically
 #			Get coordinates of an item on the grid
 			all_items[i][j] = item;
 
@@ -73,10 +76,15 @@ func match_at(i, j, color):
 				return true;
 	pass;
 
-# Convert grid coordinates to pixel coordinates
+# Convert coordinates
 func grid_to_pixel(column, row):
-	var new_x = x_start + offset * column;
-	var new_y = y_start + -offset * row;
+	var new_x = round(x_start + offset * column);
+	var new_y = round(y_start + offset * row);
+	return Vector2(new_x, new_y);
+	
+func pixel_to_grid(pixel_x, pixel_y):
+	var new_x = round((pixel_x - x_start) / offset);
+	var new_y = round((pixel_y - y_start) / offset);
 	return Vector2(new_x, new_y);
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
