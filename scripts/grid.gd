@@ -7,22 +7,30 @@ extends Node2D
 @export var y_start: int;
 @export var offset: int;
 
+# Items array
 var possible_items = [
-	preload("res://scenes/items/blue_item.tscn"),
-	preload("res://scenes/items/green_item.tscn"),
-	preload("res://scenes/items/red_item.tscn"),
-	preload("res://scenes/items/violet_item.tscn"),
-	preload("res://scenes/items/yellow_item.tscn")
+	preload("res://scenes/items/BlueItem.tscn"),
+	preload("res://scenes/items/GreenItem.tscn"),
+	preload("res://scenes/items/RedItem.tscn"),
+	preload("res://scenes/items/VioletItem.tscn"),
+	preload("res://scenes/items/YellowItem.tscn")
 ];
 
+# Current items on the scene
 var all_items = [];
+
+# Touch variables
+var first_touch = Vector2(0, 0);
+var final_touch = Vector2(0, 0);
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	print("Start the game")
 	randomize();
 	all_items = make_2d_array();
 	spawn_items();
 
+# Create board
 func make_2d_array():
 	var array = [];
 	for i in width:
@@ -31,20 +39,46 @@ func make_2d_array():
 			array[i].append(null);
 	return array;
 
+# Randomize items
 func spawn_items():
 	for i in width:
 		for j in height:
 #			Get a random number
 			var rand = randi_range(0, possible_items.size()-1);
+#			Instance item from an array
 			var item = possible_items[rand].instantiate();
+#			Avoid generating matching items
+			var loops = 0;
+			while(match_at(i, j, item.color) && loops < 100):
+				rand = randi_range(0, possible_items.size()-1);
+				loops += 1;
+				item = possible_items[rand].instantiate();
+#			Create item if no match around
 			add_child(item);
 			item.set_position(grid_to_pixel(i, j));
+#			Get coordinates of an item on the grid
+			all_items[i][j] = item;
 
+# Find matches around an item
+func match_at(i, j, color):
+#	Column
+	if i > 1:
+		if all_items[i - 1][j] != null && all_items[i - 2][j] != null:
+			if all_items[i - 1][j].color == color && all_items[i - 2][j].color == color:
+				return true;
+#	Row
+	if j > 1:
+		if all_items[i][j - 1] != null && all_items[i][j - 2] != null:
+			if all_items[i][j - 1].color == color && all_items[i][j - 2].color == color:
+				return true;
+	pass;
+
+# Convert grid coordinates to pixel coordinates
 func grid_to_pixel(column, row):
 	var new_x = x_start + offset * column;
 	var new_y = y_start + -offset * row;
 	return Vector2(new_x, new_y);
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+#func _process(delta: float) -> void:
+	#pass
