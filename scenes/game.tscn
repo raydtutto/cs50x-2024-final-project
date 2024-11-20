@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmci2ijs1mcnc"]
+
+[ext_resource type="PackedScene" uid="uid://ce3p06pc7bg48" path="res://scenes/grid.tscn" id="1_bboc1"]
+[ext_resource type="PackedScene" uid="uid://xykxthd6dwcm" path="res://scenes/items/item.tscn" id="1_vki63"]
+[ext_resource type="PackedScene" uid="uid://cfuwes46vh4q2" path="res://scenes/board.tscn" id="1_ysc1l"]
+
+[node name="game" type="Node2D"]
+
+[node name="grid" parent="." instance=ExtResource("1_bboc1")]
+width = 7
+height = 9
+x_start = 180
+y_start = 1440
+offset = 120
+
+[node name="board" parent="." instance=ExtResource("1_ysc1l")]
+
+[node name="Item" parent="board" instance=ExtResource("1_vki63")]
