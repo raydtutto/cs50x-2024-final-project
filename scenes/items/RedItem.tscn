@@ -1,18 +1,54 @@
-[gd_scene load_steps=4 format=3 uid="uid://b8c5we3u4stew"]
+[gd_scene load_steps=4 format=3 uid="uid://hcqnlg3ros7s"]
 
 [ext_resource type="Script" path="res://scripts/item.gd" id="1_4l75t"]
-[ext_resource type="Texture2D" uid="uid://clkmw24o03f47" path="res://assets/sprites/items/red.png" id="2_t220n"]
+[ext_resource type="Texture2D" uid="uid://c0n0er5lwhxtk" path="res://assets/sprites/tiles/tile_default.png" id="2_31f3w"]
+[ext_resource type="Texture2D" uid="uid://q2ayqvi3idn4" path="res://assets/sprites/items/red.png" id="2_t220n"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bxirk"]
-size = Vector2(96, 96)
-
-[node name="RedItem" type="Area2D"]
+[node name="RedItem" type="Control"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -960.0
+offset_bottom = -1800.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_4l75t")
 color = 2
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_31f3w")
+expand_mode = 3
+
+[node name="img_holder" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="red_sprite" type="Sprite2D" parent="img_holder"]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_t220n")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_bxirk")
+[node name="Button" type="Button" parent="."]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

@@ -1,0 +1,47 @@
+[gd_scene load_steps=7 format=3 uid="uid://cwiuufqcn40fw"]
+
+[ext_resource type="Script" path="res://scripts/grid_container.gd" id="1_pj7r0"]
+[ext_resource type="PackedScene" uid="uid://dba81ee6wklh0" path="res://scenes/items/BlueItem.tscn" id="2_cuypk"]
+[ext_resource type="PackedScene" uid="uid://b1xnw25kabgqy" path="res://scenes/items/GreenItem.tscn" id="3_cb4x0"]
+[ext_resource type="PackedScene" uid="uid://hcqnlg3ros7s" path="res://scenes/items/RedItem.tscn" id="4_uniwt"]
+[ext_resource type="PackedScene" uid="uid://dk0y3lc0xwbk3" path="res://scenes/items/VioletItem.tscn" id="5_4ebei"]
+[ext_resource type="PackedScene" uid="uid://ccq48tf7ittxg" path="res://scenes/items/YellowItem.tscn" id="6_gvn5p"]
+
+[node name="Level1" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Moves" type="Label" parent="."]
+offset_top = 64.0
+offset_right = 1080.0
+offset_bottom = 256.0
+theme_override_font_sizes/font_size = 100
+text = "Score: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+columns = 5
+script = ExtResource("1_pj7r0")
+item_scene = Array[PackedScene]([ExtResource("2_cuypk"), ExtResource("3_cb4x0"), ExtResource("4_uniwt"), ExtResource("5_4ebei"), ExtResource("6_gvn5p")])
+height = 5

@@ -40,15 +40,17 @@ func spawn_items():
 	for i in width:
 		for j in height:
 #			Get a random number
-			var rand = randi_range(0, possible_items.size()-1);
+			#var rand = randi_range(0, possible_items.size()-1);
 #			Instance item from an array
-			var item = possible_items[rand].instantiate();
+			#var item = possible_items[rand].instantiate();
+			var item = possible_items.pick_random()
 #			Avoid generating matching items
 			var loops = 0;
 			while(match_at(i, j, item.color) && loops < 100):
-				rand = randi_range(0, possible_items.size()-1);
+				#rand = randi_range(0, possible_items.size()-1);
+				item = possible_items.pick_random()
 				loops += 1;
-				item = possible_items[rand].instantiate();
+				#item = possible_items[rand].instantiate();
 			#print("Item at grid position: ", i, j, "Pixel position: ", grid_to_pixel(i, j))	# DEBUG
 			
 			# Set the grid_node property before adding to the scene

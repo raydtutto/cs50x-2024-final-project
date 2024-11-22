@@ -2,8 +2,6 @@
 .godot/
 /android/
 
-# All .import files
-**/*.import
 
 # CLion
 .idea
