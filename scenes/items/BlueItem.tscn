@@ -1,20 +1,18 @@
 [gd_scene load_steps=4 format=3 uid="uid://dba81ee6wklh0"]
 
-[ext_resource type="Script" path="res://scripts/item.gd" id="1_k0suo"]
+[ext_resource type="Script" path="res://scripts/item_property.gd" id="1_naxri"]
 [ext_resource type="Texture2D" uid="uid://c0n0er5lwhxtk" path="res://assets/sprites/tiles/tile_default.png" id="2_3e8co"]
 [ext_resource type="Texture2D" uid="uid://dyhtlq6nw3ffl" path="res://assets/sprites/items/blue.png" id="2_jid34"]
 
 [node name="BlueItem" type="Control"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -960.0
-offset_bottom = -1800.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_k0suo")
+offset_left = -60.48
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.48
+mouse_filter = 1
+script = ExtResource("1_naxri")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -39,15 +37,3 @@ grow_vertical = 2
 [node name="blue_sprite" type="Sprite2D" parent="img_holder"]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_jid34")
-
-[node name="Button" type="Button" parent="."]
-modulate = Color(1, 1, 1, 0)
-self_modulate = Color(1, 1, 1, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
