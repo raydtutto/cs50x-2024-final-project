@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://bby3ifx7scp4b"]
+[gd_scene load_steps=3 format=3 uid="uid://bby3ifx7scp4b"]
 
 [ext_resource type="Script" path="res://scripts/item.gd" id="1_62rub"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_meyw1"]
+bg_color = Color(0, 0.677159, 0.484116, 1)
 
 [node name="TileBg" type="Control"]
 custom_minimum_size = Vector2(120, 120)
@@ -13,7 +16,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_62rub")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="select" type="Panel" parent="."]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -22,9 +25,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_meyw1")
 
 [node name="holder" type="Control" parent="."]
 layout_mode = 1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
