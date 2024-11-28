@@ -2,6 +2,7 @@ extends CanvasLayer
 
 # Notifies `game` node that the button has been pressed
 signal start_game
+signal snake_game
 
 
 func _ready() -> void:
@@ -28,8 +29,13 @@ func _ready() -> void:
 
 
 func _on_StartButton_pressed():
-	print("Start pressed")
+	print("Match3 pressed")
 	start_game.emit()
+
+
+func _on_snake_button_pressed() -> void:
+	print("Snake pressed")
+	snake_game.emit()
 
 
 func _on_ExitButton_pressed() -> void:

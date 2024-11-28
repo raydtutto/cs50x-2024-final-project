@@ -17,7 +17,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Moves" type="Label" parent="."]
+[node name="Score" type="Label" parent="."]
 layout_mode = 1
 offset_left = 56.0
 offset_top = 56.0
@@ -41,7 +41,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("restart_btn", "score_lbl")]
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 4
@@ -50,7 +50,9 @@ script = ExtResource("1_pj7r0")
 item_scene = Array[PackedScene]([ExtResource("2_cuypk"), ExtResource("3_cb4x0"), ExtResource("4_uniwt"), ExtResource("5_4ebei"), ExtResource("6_gvn5p")])
 tileBG = ExtResource("2_iban4")
 height = 5
-patterns = Array[PackedVector2Array]([PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0), PackedVector2Array(0, -1, 0, -2)])
+patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, 0, -2), PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0)])
+restart_btn = NodePath("../../../Button")
+score_lbl = NodePath("../../../Score")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 1
@@ -65,3 +67,8 @@ grow_horizontal = 0
 scale = Vector2(0.5, 0.5)
 icon = ExtResource("7_5qu6v")
 flat = true
+
+[node name="AnimationTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="AnimationTimer" to="VBoxContainer/HBoxContainer/GridContainer" method="_on_timer_timeout"]

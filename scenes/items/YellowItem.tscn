@@ -7,6 +7,7 @@
 [node name="YellowItem" type="Control"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 3
+anchors_preset = 0
 offset_left = -60.0
 offset_top = -60.0
 offset_right = 60.0
@@ -15,7 +16,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_qqw4d")
-color = 4
+color = 5
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1

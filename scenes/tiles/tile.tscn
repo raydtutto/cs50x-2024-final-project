@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://dvk426yoau18e"]
+[gd_scene load_steps=2 format=3 uid="uid://dvk426yoau18e"]
+
+[ext_resource type="Script" path="res://scripts/item.gd" id="1_ed0ds"]
 
 [node name="Tile" type="Node2D"]
+script = ExtResource("1_ed0ds")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
