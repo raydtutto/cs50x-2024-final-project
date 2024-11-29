@@ -67,8 +67,3 @@ grow_horizontal = 0
 scale = Vector2(0.5, 0.5)
 icon = ExtResource("7_5qu6v")
 flat = true
-
-[node name="AnimationTimer" type="Timer" parent="."]
-one_shot = true
-
-[connection signal="timeout" from="AnimationTimer" to="VBoxContainer/HBoxContainer/GridContainer" method="_on_timer_timeout"]

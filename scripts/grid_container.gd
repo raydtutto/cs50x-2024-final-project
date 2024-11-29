@@ -7,18 +7,19 @@ extends GridContainer
 @export var restart_btn: Button
 @export var score_lbl: Label
 
-#TODO: board_block false, if swipe block true, disable all touch().disa
+# Block board for animation
 var board_block: bool = false
 
+# Game score
 var score: int = 0
 
-# TODO: dictionary of items' dictionaries
+# Dictionary of items' dictionaries
 var board = Dictionary()
 
+# Selected tile
 var last_tile = null
 
-# 1. Add debug true or false
-# 2. var dictionary filled with default
+# Debug board
 var debug:bool = true
 var board_debug = {
 	0: {
@@ -59,7 +60,7 @@ var board_debug = {
 }
 
 
-# Called when the node enters the scene tree for the first time.
+# Called when the node enters the scene tree for the first time
 func _ready():
 	assert(patterns.size() > 0, "patterns should be properly filled")
 	assert(restart_btn)
@@ -73,10 +74,13 @@ func start():
 #	Creating a timer and waiting for timeout signal
 	await get_tree().create_timer(1).timeout
 	print("AFTER timer")
-	
 	initialize_items_array()
-	#get_node("../../../AnimationTimer").start()
 	#show()
+
+
+# ------------------------------------------------------------
+# MATCH3 LOGIC
+# ------------------------------------------------------------
 
 
 # Initialize the board 2D array
@@ -99,7 +103,7 @@ func initialize_items_array():
 		for y:int in range(height):
 			var temp_item = tileBG.instantiate()
 			add_child(temp_item)
-			# todo connect touch_process to temp_item.on_touch
+			# Connects touch_process to temp_item.on_touch
 			temp_item.connect("on_touch", touch_process)
 			board[x][y] = temp_item
 			temp_item.name = "x{0}_y{1}".format([x, y])
@@ -112,23 +116,31 @@ func initialize_items_array():
 				m3item = item_scene.pick_random()
 			temp_item.create_item(m3item, x, y, true)
 			var loops = 0
-			# Avoid matching items
-			print(board.keys())
-			print(board[x].keys())
 			while match_at(x, y, temp_item.get_color()) and loops < 100:
 				m3item = item_scene.pick_random()
 				temp_item.create_item(m3item, x, y, true)
 				loops += 1
-			print(loops)	# DEBUG
 
 
-# todo func swap
-func swap(a, b, skip_update: bool=false):
-#	TODO: if swap && skip_update == false: 1 sec animation, block swap
-# 	if no matches swap back
-	print("swap a: ", a.x_pos, a.y_pos, " b: ", b.x_pos, b.y_pos)	# DEBUG
+# Check swap
+func swap_check(a, b):
+	swap(a, b)
+	await get_tree().create_timer(1).timeout
+	if not match_at(a.x_pos, a.y_pos, a.get_color()) and not match_at(b.x_pos, b.y_pos, b.get_color()):
+		swap(b, a)
+		await get_tree().create_timer(1).timeout
+	update_matches()
+	board_block = false
+
+
+# Swap items
+func swap(a, b):	
 	var temp_a = a.get_item()
 	var temp_b = b.get_item()
+	
+#	Animation variables
+	var a_prev_pos = b.global_position - a.global_position + Vector2(-60, -60)
+	var b_prev_pos = a.global_position - b.global_position + Vector2(-60, -60)
 	
 	if temp_a != null:
 		temp_a.reparent(b.get_holder())
@@ -141,23 +153,22 @@ func swap(a, b, skip_update: bool=false):
 		a.get_item().position = Vector2(-60, -60)
 	if b.get_item() != null:
 		b.get_item().position = Vector2(-60, -60)
-		
-	if not skip_update:
-		update_matches()
+	
+	a.start_move_animation(a_prev_pos, Vector2(-60, -60))
+	b.start_move_animation(b_prev_pos, Vector2(-60, -60))
 
 
-# todo func touch_process x y
+# Touch_process
 func touch_process(tile):
-	# TODO: if block board true: return
+#	Block touch when animation is on
 	if board_block:
 		return
-	print("x: ", tile.x_pos, " y: ", tile.y_pos)    # DEBUG
 	if last_tile:
 		last_tile.set_select(false)
 	
 	if last_tile and last_tile != tile:
 		if (last_tile.x_pos + 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) || (last_tile.x_pos - 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) || (last_tile.y_pos + 1 == tile.y_pos && last_tile.x_pos == tile.x_pos) || (last_tile.y_pos - 1 == tile.y_pos && last_tile.x_pos == tile.x_pos):
-			swap(last_tile, tile)
+			swap_check(last_tile, tile)
 			board_block = true
 			last_tile = null
 			return
@@ -177,7 +188,6 @@ func match_at(x:int, y:int, color):
 				if board[next_x].has(next_y):
 					if board[next_x][next_y] != null && board[next_x][next_y].get_color() == color:
 						size -= 1
-		print("size is ", size)
 		if size == 0:
 			return true
 	return false
@@ -195,7 +205,7 @@ func update_matches():
 
 	print(matched_tiles)
 	for tile in matched_tiles:
-		# TODO: add score
+#		Update score
 		increase_score()
 		if tile.get_item():
 			tile.get_item().queue_free()
@@ -208,9 +218,8 @@ func update_matches():
 	for y in board[board.size()-1]:
 		var tile = board[board.size()-1][y]
 		check_top_tiles(tile)
-		
 
-		
+
 func check_top_tiles(tile:TileBg):
 	print("Check top: tile is ", tile)
 	var offset: int = 1
@@ -224,7 +233,7 @@ func check_top_tiles(tile:TileBg):
 			continue
 		var upper = board[tile.x_pos - offset][tile.y_pos]
 		if upper.get_item() != null && tile.get_item() == null:
-			swap(tile, upper, true)
+			swap(tile, upper)
 			var test_tile = tile.get_item()
 			var test_upper = upper.get_item()
 			var test_x = tile.x_pos
@@ -233,37 +242,34 @@ func check_top_tiles(tile:TileBg):
 				tile = board[tile.x_pos - 1][tile.y_pos]
 		else:
 			offset += 1
-# TODO: add await Timer
 	await get_tree().create_timer(1).timeout
-	print("Generate new tiles")
 	var updated:bool = false
 	for item in range(height):
 		var tile_new = board[item][tile.y_pos]
 		if tile_new.get_item() == null:
 			var m3item = item_scene.pick_random()
 			tile_new.create_item(m3item, item, tile.y_pos, true)
+			
+#			DEBUG COLOR
 			var c = tile_new.get_item()
 			print(c.self_modulate, c.modulate)
 			c.set_modulate(Color(1, 0.5, 1, 0.5))
 			print(c.self_modulate, c.modulate)
+			
 			updated = true
 	if updated:
 		update_matches()
-	#else:
-		#board_block = false
-#		
+	else:
+		board_block = false
 
 
 func increase_score():
 	score += 1
 	var text = "Score: %d" % score
 	score_lbl.set_text(text)
-	
+
+
 func reset_score():
 	score = 0
 	var text = "Score: %d" % score
 	score_lbl.set_text(text)
-
-
-#func _on_timer_timeout() -> void:
-	#print("Timer has finished")

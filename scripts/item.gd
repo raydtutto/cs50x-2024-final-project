@@ -1,7 +1,7 @@
 extends Control
 class_name TileBg
 
-@export var m3item : Node
+@export var m3item : Control
 
 signal on_touch
 
@@ -14,11 +14,15 @@ func _ready() -> void:
 	pass
 
 
+# ------------------------------------------------------------
+# LOGIC: add item to the board
+# ------------------------------------------------------------
+
+
 # Check mouse event
 func _gui_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			#print("Touched node: ", self.name, " ", "Position: ", x_pos, y_pos);
 			on_touch.emit(self)
 
 
@@ -35,7 +39,7 @@ func create_item(item: PackedScene, x:int, y:int, instantly: bool=false):
 	y_pos = y
 	var text = "c: %d, x: %d, y: %d" % [m3item.color, x_pos, y_pos]
 	$Label.set_text(text)
-	pass
+	# TODO: animation
 
 
 # Return item
@@ -65,3 +69,20 @@ func get_color() -> ItemProp.ItemTypes:
 		return m3item.color
 	print("Color is unknown")
 	return ItemProp.ItemTypes.UNKNOWN
+
+
+# ------------------------------------------------------------
+# ANIMATION
+# ------------------------------------------------------------
+
+
+func start_move_animation(prev_pos:Vector2, next_pos:Vector2):
+	if not m3item:
+		return
+	m3item.position = prev_pos
+	var tween = get_tree().create_tween()
+	tween.tween_property(m3item, "position", next_pos, .5).set_ease(Tween.EASE_IN_OUT)
+	tween.play()
+
+
+#func 
