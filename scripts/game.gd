@@ -1,16 +1,16 @@
 extends Control
 #
-var moves = 0
+var moves: int = 0
 
-func _ready():
+func _ready() -> void:
 	$HUD.start_game.connect(new_game)
 	$HUD.snake_game.connect(snake_new_game)
 
 #func game_over():
 	#$Music.stop()
 	
-func new_game():
-	var level = preload("res://scenes/levels/level_1.tscn")
+func new_game() -> void:
+	var level: PackedScene = preload("res://scenes/levels/level_1.tscn")
 	
 #	Clear level holder
 	for node in $level_holder.get_children():
@@ -23,8 +23,8 @@ func new_game():
 	$HUD.hide()
 	$Music.play()
 	
-func snake_new_game():
-	var snake = preload("res://scenes/snake_game/snake_level_1.tscn")
+func snake_new_game() -> void:
+	var snake: PackedScene = preload("res://scenes/snake_game/snake_level_1.tscn")
 	
 #	Clear level holder
 	for node in $level_holder.get_children():

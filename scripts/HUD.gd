@@ -28,7 +28,7 @@ func _ready() -> void:
 	#$ScoreLabel.text = str(score)
 
 
-func _on_StartButton_pressed():
+func _on_StartButton_pressed() -> void:
 	print("Match3 pressed")
 	start_game.emit()
 

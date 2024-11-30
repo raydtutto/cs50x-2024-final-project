@@ -41,7 +41,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("restart_btn", "score_lbl")]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("restart_btn", "score_lbl", "block_lbl")]
 layout_direction = 1
 layout_mode = 2
 size_flags_horizontal = 4
@@ -53,6 +53,7 @@ height = 5
 patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, 0, -2), PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0)])
 restart_btn = NodePath("../../../Button")
 score_lbl = NodePath("../../../Score")
+block_lbl = NodePath("../../../BlockLabel")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 1
@@ -67,3 +68,14 @@ grow_horizontal = 0
 scale = Vector2(0.5, 0.5)
 icon = ExtResource("7_5qu6v")
 flat = true
+
+[node name="BlockLabel" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 56.0
+offset_top = 248.0
+offset_right = 496.0
+offset_bottom = 392.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 80
+text = "Block:"
