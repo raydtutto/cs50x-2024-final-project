@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://8nudq6m78nlb"]
+
+[ext_resource type="PackedScene" uid="uid://dvk426yoau18e" path="res://scenes/tiles/tile.tscn" id="1_8gxss"]
+
+[node name="tile_selected" instance=ExtResource("1_8gxss")]
+
+[node name="select" parent="." index="0"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2

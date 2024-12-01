@@ -12,27 +12,27 @@ func _ready() -> void:
 func new_game() -> void:
 	var level: PackedScene = preload("res://scenes/levels/level_1.tscn")
 	
-#	Clear level holder
+	# Clear level holder
 	for node in $level_holder.get_children():
 		$level_holder.remove_child(node)
 	
-#	Add level to scene
+	# Add level to scene
 	$level_holder.add_child(level.instantiate())
 	
-#	Miscellaneous
+	# Miscellaneous
 	$HUD.hide()
 	$Music.play()
 	
 func snake_new_game() -> void:
 	var snake: PackedScene = preload("res://scenes/snake_game/snake_level_1.tscn")
 	
-#	Clear level holder
+	# Clear level holder
 	for node in $level_holder.get_children():
 		$level_holder.remove_child(node)
 	
-#	Add level to scene
+	# Add level to scene
 	$level_holder.add_child(snake.instantiate())
 	
-#	Miscellaneous
+	# Miscellaneous
 	$HUD.hide()
 	$Music.play()

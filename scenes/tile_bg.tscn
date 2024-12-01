@@ -1,31 +1,18 @@
 [gd_scene load_steps=3 format=3 uid="uid://bby3ifx7scp4b"]
 
 [ext_resource type="Script" path="res://scripts/item.gd" id="1_62rub"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_meyw1"]
-bg_color = Color(0, 0.677159, 0.484116, 1)
+[ext_resource type="PackedScene" uid="uid://dvk426yoau18e" path="res://scenes/tiles/tile.tscn" id="2_owdhm"]
 
 [node name="TileBg" type="Control"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 3
-anchor_right = 0.111
-anchor_bottom = 0.062
+anchors_preset = 0
 offset_right = 0.119987
 offset_bottom = 0.959991
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_62rub")
-
-[node name="select" type="Panel" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_meyw1")
+m3item_bg = ExtResource("2_owdhm")
 
 [node name="holder" type="Control" parent="."]
 layout_mode = 1
@@ -39,6 +26,7 @@ grow_vertical = 2
 mouse_filter = 1
 
 [node name="Label" type="Label" parent="."]
+visible = false
 modulate = Color(0.144063, 0.144063, 0.144063, 1)
 layout_mode = 1
 anchors_preset = 3
@@ -50,4 +38,5 @@ offset_left = -40.0
 offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
+mouse_filter = 1
 text = "test"

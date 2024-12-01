@@ -14,11 +14,13 @@ offset_right = 60.0
 offset_bottom = 60.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(60, 60)
 mouse_filter = 1
 script = ExtResource("1_8nvce")
 color = 4
 
 [node name="TextureRect" type="TextureRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

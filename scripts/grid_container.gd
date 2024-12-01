@@ -29,7 +29,7 @@ var board = Dictionary()
 var last_tile: Control = null
 var touch_count: int = 0
 
-# Debug mode and board
+# DEBUG mode and board
 var debug_mode:bool = false
 var board_debug: Dictionary = {
 	0: {
@@ -72,25 +72,24 @@ var board_debug: Dictionary = {
 
 # Called when the node enters the scene tree for the first time
 func _ready() -> void:
-#	Scene preparation
+	# Scene preparation
 	assert(patterns.size() > 0, "patterns should be properly filled")
 	assert(restart_btn)
 	restart_btn.pressed.connect(start)
 	assert(score_lbl)
 	assert(block_lbl)
 
-#	Run the game
+	# Run the game
 	start()
 
 # Start
 func start() -> void:
-#	Creating a timer and waiting for timeout signal
-	await get_tree().create_timer(1).timeout
+	# Creating a timer and waiting for timeout signal
 	
-#	Create board
+	# Create board
 	initialize_items_array()
-	
-	
+
+
 func _process(dt):
 	block_lbl_on(board_block)
 
@@ -102,22 +101,22 @@ func _process(dt):
 
 # Initialize the board 2D array
 func initialize_items_array() -> void:
-#	Clear filled board
+	# Clear filled board
 	if not board.is_empty():
-#		Clear board
+		# Clear board
 		for tile in get_children():
 			tile.queue_free()
 		board.clear()
 	reset_score()
 	last_tile = null
 
-#	Create board
+	# Create board
 	for x:int in range(self.columns):
 		board[x] = Dictionary()
 		for y:int in range(height):
 			board[x][y] = null
 
-#	Populate board
+	# Populate board
 	for x:int in range(self.columns):
 		for y:int in range(height):
 			var temp_item: Control = tileBG.instantiate()
@@ -125,26 +124,26 @@ func initialize_items_array() -> void:
 
 			# Connects touch_process to temp_item.on_touch
 			temp_item.connect("on_touch", touch_process)
-#			TODO: Unselect already selected item
+			# TODO: Unselect already selected item
 			if touch_count > 0:
 				print("New selected ", touch_count)
 
-#			Add item
+			# Add item
 			board[x][y] = temp_item
 			temp_item.name = "x{0}_y{1}".format([x, y])
 			var m3item:PackedScene
 
-#			If "DEBUG MODE" get colors from debug board
+			# If "DEBUG MODE" get colors from debug board
 			if debug_mode:
 				var color: int = board_debug[x][y]
 				m3item = item_scene[color-1]
 
-#			Pick random item from the list of items
+			# Pick random item from the list of items
 			else:
 				m3item = item_scene.pick_random()
 			temp_item.create_item(m3item, x, y, true)
 
-#			Continue to change item if there is a match
+			# Continue to change item if there is a match
 			var loops: int = 0
 			while match_at(x, y, temp_item.get_color()) and loops < 100:
 				m3item = item_scene.pick_random()
@@ -155,33 +154,37 @@ func initialize_items_array() -> void:
 # Check swap before swap()
 func swap_check(a: TileBg, b: TileBg) -> void:
 	board_block = true
-#	Run swap
+	a.set_select(true)
+	b.set_select(true)
+	# Run swap
 	swap(a, b)
 	await get_tree().create_timer(1).timeout
 
-#	Check match
+	# Check match
 	if not match_at(a.x_pos, a.y_pos, a.get_color()) and not match_at(b.x_pos, b.y_pos, b.get_color()):
 		swap(b, a)
 		await get_tree().create_timer(1).timeout
+	a.set_select(false)
+	b.set_select(false)
 
-#	Check board
+	# Check board
 	await update_matches()
 
-#	Unblock board
+	# Unblock board
 	board_block = false
 
 
 # Swap items
 func swap(a: TileBg, b: TileBg) -> void:	
-#	Get items
+	# Get items
 	var temp_a: Control = a.get_item()
 	var temp_b: Control = b.get_item()
 
-#	Animation variables
+	# Animation variables
 	var a_prev_pos: Vector2 = b.global_position - a.global_position + Vector2(-60, -60)
 	var b_prev_pos: Vector2 = a.global_position - b.global_position + Vector2(-60, -60)
 
-#	Change parents
+	# Change parents
 	if temp_a != null:
 		temp_a.reparent(b.get_holder())
 	if temp_b != null:
@@ -189,28 +192,28 @@ func swap(a: TileBg, b: TileBg) -> void:
 	a.set_item(temp_b)
 	b.set_item(temp_a)
 
-#	Change position
+	# Change position
 	if a.get_item() != null:
 		a.get_item().position = Vector2(-60, -60)
 	if b.get_item() != null:
 		b.get_item().position = Vector2(-60, -60)
 
-#	Run animation
-	a.start_move_animation(a_prev_pos, Vector2(-60, -60))
-	b.start_move_animation(b_prev_pos, Vector2(-60, -60))
+	# Run animation
+	a.anim_start_move(a_prev_pos, Vector2(-60, -60))
+	b.anim_start_move(b_prev_pos, Vector2(-60, -60))
 
 
 # Touch_process
 func touch_process(tile: TileBg) -> void:
-#	Block board when animation is on
+	# Block board when animation is on
 	if board_block:
 		return
 
-#	Unselect if already selected
-	if last_tile:
-		last_tile.set_select(false)
+	# Unselect if already selected
+	#if last_tile:
+		#last_tile.set_select(false)
 
-#	Return if last tile already exist and last tile isn't tile
+	# Return if last tile already exist and last tile isn't tile
 	if last_tile and last_tile != tile:
 		if (last_tile.x_pos + 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) || (last_tile.x_pos - 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) || (last_tile.y_pos + 1 == tile.y_pos && last_tile.x_pos == tile.x_pos) || (last_tile.y_pos - 1 == tile.y_pos && last_tile.x_pos == tile.x_pos):
 			var item = last_tile
@@ -219,8 +222,8 @@ func touch_process(tile: TileBg) -> void:
 		
 			return
 	
-#	Select tile
-	tile.set_select(true)
+	# Select tile
+	#tile.set_select(true)
 	last_tile = tile
 	touch_count += 1
 	print("Clicked on", tile.global_position)
@@ -246,7 +249,7 @@ func match_at(x:int, y:int, color: ItemProp.ItemTypes):
 
 
 func update_matches() -> bool:
-#	Free board
+	# Free board
 	await get_tree().create_timer(1).timeout
 	var matched_tiles: Array = []
 	for x:int in range(self.columns):
@@ -255,16 +258,13 @@ func update_matches() -> bool:
 			if match_at(tile.x_pos, tile.y_pos, tile.get_color()):
 				matched_tiles.append(tile)
 	for tile in matched_tiles:
-#		Update score
+		# Update score
 		increase_score()
 		if tile.get_item():
 			tile.get_item().queue_free()
 		tile.set_item(null)
-	#if last_tile:
-		#last_tile.set_select(false)
-	#last_tile = null
 	
-#	Check board from bottom to top
+	# Check board from bottom to top
 	var is_any_update = false
 	for y in board[board.size()-1]:
 		var tile: TileBg = board[board.size()-1][y]
@@ -311,7 +311,7 @@ func create_top_tiles(tile:TileBg) -> void:
 			var m3item: PackedScene = item_scene.pick_random()
 			tile_new.create_item(m3item, item, tile.y_pos, true)
 			
-#			DEBUG COLOR
+			# DEBUG COLOR
 			#var c: Control = tile_new.get_item()
 			##print(c.self_modulate, c.modulate)
 			#c.set_modulate(Color(1, 0.5, 1, 0.5))
