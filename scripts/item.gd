@@ -11,6 +11,8 @@ signal on_touch
 var x_pos: int
 var y_pos: int
 
+var selected_on: bool = false
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -67,16 +69,18 @@ func get_holder() -> Control:
 func set_select(value: bool) -> void:
 	if m3item:
 		var player: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
-		var select = m3item.find_child("select",true,false) as Panel
-		if not player or not select:
+		if not player:
 			print("No select animation")
 			return
 		if value:
-			select.show()
-			player.play("selected")
+			if selected_on:
+				print("already selected")
+			else:
+				selected_on = true
+				player.play("selected")
 		else:
+			selected_on = false
 			player.play("RESET")
-			select.hide()
 	else:
 		print("No item found")
 
@@ -94,41 +98,17 @@ func get_color() -> ItemProp.ItemTypes:
 # ------------------------------------------------------------
 
 
-func anim_selected(anim_on:bool) -> void:
-	if m3item:
-		var player: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
-		var select: Panel = m3item.find_child("select",true,false) as Panel
-		var count: int = 0
-		if not player or not select:
-			print("No select animation")
-			return
-		if anim_on:
-			if count > 0:
-				select.show()
-			select.show()
-			player.play("selected")
-			count += 1
-		else:
-			player.play("RESET")
-			select.hide()
-			count -= 1
-
-
 func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 	if not m3item:
 		return
 	m3item.position = prev_pos
 	var tween: Tween = get_tree().create_tween()
-	#print("Animation position: ", prev_pos, next_pos)
 	tween.tween_property(m3item, "position", next_pos, .5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 	tween.play()
 
 
 func anim_new_item_appearance(falling:bool = false) -> void:
-	# TODO: add falling animation
-	if falling == true:
-		pass
-
+	
 	# Set scale with bounce
 	var tween: Tween = get_tree().create_tween()
 	m3item.scale = Vector2(.7, .7)
