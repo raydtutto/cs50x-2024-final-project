@@ -111,7 +111,7 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 	if rows > 1 or rows < -1:
 		if rows < -1:
 			rows *= -1
-		rows /= PI
+		rows /= 2.5
 		tween.tween_property(m3item, "position", next_pos, .5 * rows).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 		tween.play()
 		return
