@@ -61,7 +61,7 @@ var board_debug: Dictionary = {
 		4: ItemProp.ItemTypes.RED
 		},
 	4: {
-		0: ItemProp.ItemTypes.YELLOW,
+		0: ItemProp.ItemTypes.VIOLET,
 		1: ItemProp.ItemTypes.BLUE,
 		2: ItemProp.ItemTypes.RED,
 		3: ItemProp.ItemTypes.YELLOW,
@@ -200,6 +200,8 @@ func swap(a: TileBg, b: TileBg) -> void:
 	if b.get_item() != null:
 		b.get_item().position = Vector2(-60, -60)
 
+	touch_count = 0
+	
 	# Run animation
 	$"../../../Sound_hoot".play()
 	a.anim_start_move(a_prev_pos, Vector2(-60, -60))
@@ -208,6 +210,7 @@ func swap(a: TileBg, b: TileBg) -> void:
 
 # Touch_process
 func touch_process(tile: TileBg) -> void:
+	
 	# Block board when animation is on
 	if board_block:
 		return
@@ -225,8 +228,15 @@ func touch_process(tile: TileBg) -> void:
 		# Select tile
 		tile.set_select(true)
 		$"../../../Sound_hoot_small".play()
+		
+		#touch_count += 1
+		#print("touch_count is ", touch_count)
+		#if touch_count > 1 and last_tile == tile:
+			#tile.set_select(false)
+			#touch_count = 0
+			#return
+			
 		last_tile = tile
-		touch_count += 1
 		print("Clicked on", tile.global_position)
 
 
@@ -263,16 +273,23 @@ func update_matches() -> bool:
 
 	# Play matched sound
 	if matched_tiles.size() > 0:
-		print(matched_tiles)
+		#print(matched_tiles)
 		$"../../../Sound_trumpet".play()
-		await get_tree().create_timer(1).timeout
+		for tile in matched_tiles:
+			tile.anim_item_matched()
+			tile.anim_item_bg_matched()
+		await get_tree().create_timer(.3).timeout
 
+	var freed : bool = false
 	for tile in matched_tiles:
 		# Update score
 		increase_score()
 		if tile.get_item():
 			tile.get_item().queue_free()
+			freed = true
 		tile.set_item(null)
+	if freed:
+		await get_tree().create_timer(.3).timeout
 
 	# Check board from bottom to top
 	var is_any_update = false
@@ -282,10 +299,11 @@ func update_matches() -> bool:
 			is_any_update = true
 
 	if search_null_tiles_column():
-		await get_tree().create_timer(.5).timeout
+		await get_tree().create_timer(.3).timeout
 		for y in board[board.size()-1]:
 			var tile: TileBg = board[board.size()-1][y]
 			create_top_tiles(tile)
+		await get_tree().create_timer(.3).timeout
 		return await update_matches()
 	
 	return true

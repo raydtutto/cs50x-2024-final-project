@@ -103,11 +103,25 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 		return
 	m3item.position = prev_pos
 	var tween: Tween = get_tree().create_tween()
+	
+	# Animation for multiple rows
+	var threshold: int = prev_pos.y - next_pos.y
+	var height: int = 120
+	var rows = threshold / height
+	if rows > 1 or rows < -1:
+		if rows < -1:
+			rows *= -1
+		rows /= PI
+		tween.tween_property(m3item, "position", next_pos, .5 * rows).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
+		tween.play()
+		return
+	
+	# Animation for one row
 	tween.tween_property(m3item, "position", next_pos, .5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 	tween.play()
 
 
-func anim_new_item_appearance(falling:bool = false) -> void:
+func anim_new_item_appearance() -> void:
 	
 	# Set scale with bounce
 	var tween: Tween = get_tree().create_tween()
@@ -120,3 +134,26 @@ func anim_new_item_appearance(falling:bool = false) -> void:
 	m3item.modulate = Color(1, 1, 1, 0)
 	fade_out.tween_property(m3item, "modulate", Color(1,1,1,1), .3).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 	fade_out.play()
+
+
+# Set selected status
+func anim_item_matched() -> void:
+	if m3item:
+		# Set opacity
+		await get_tree().create_timer(.20).timeout
+		var fade_out: Tween = get_tree().create_tween()
+		m3item.modulate = Color(1, 1, 1, 1)
+		fade_out.tween_property(m3item, "modulate", Color(1,1,1,0), .10).set_ease(Tween.EASE_OUT)
+		fade_out.play()
+
+
+# Set selected status
+func anim_item_bg_matched() -> void:
+	if m3item:
+		var player: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
+		if not player:
+			print("No matched animation")
+			return
+		player.play("matched")
+	else:
+		print("No item found")
