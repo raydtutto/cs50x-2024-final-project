@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cwiuufqcn40fw"]
+[gd_scene load_steps=13 format=3 uid="uid://cwiuufqcn40fw"]
 
 [ext_resource type="AudioStream" uid="uid://tan7y1jtlycc" path="res://assets/sounds/1-car-hooting.mp3" id="1_50lm2"]
 [ext_resource type="Script" path="res://scripts/grid_container.gd" id="1_pj7r0"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://dk0y3lc0xwbk3" path="res://scenes/items/VioletItem.tscn" id="5_4ebei"]
 [ext_resource type="PackedScene" uid="uid://ccq48tf7ittxg" path="res://scenes/items/YellowItem.tscn" id="6_gvn5p"]
 [ext_resource type="Texture2D" uid="uid://ddu5rq37w86uw" path="res://assets/ui/icons/menu.png" id="7_5qu6v"]
+[ext_resource type="Texture2D" uid="uid://dghbe7cgxvd24" path="res://assets/sprites/tiles/bg_5x5_dot.png" id="12_k8rq5"]
 
 [node name="Level1" type="Control"]
 layout_mode = 3
@@ -53,9 +54,24 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("restart_btn", "score_lbl", "block_lbl")]
-layout_direction = 1
+[node name="Board" type="Control" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TextureRect" type="Sprite2D" parent="VBoxContainer/HBoxContainer/Board"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("12_k8rq5")
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer/Board" node_paths=PackedStringArray("restart_btn", "score_lbl", "block_lbl")]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
@@ -63,11 +79,10 @@ columns = 5
 script = ExtResource("1_pj7r0")
 item_scene = Array[PackedScene]([ExtResource("2_cuypk"), ExtResource("3_cb4x0"), ExtResource("4_uniwt"), ExtResource("5_4ebei"), ExtResource("6_gvn5p")])
 tileBG = ExtResource("2_iban4")
-height = 5
 patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, 0, -2), PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0)])
-restart_btn = NodePath("../../../Button")
-score_lbl = NodePath("../../../Score")
-block_lbl = NodePath("../../../BlockLabel")
+restart_btn = NodePath("../../../../Button")
+score_lbl = NodePath("../../../../Score")
+block_lbl = NodePath("../../../../BlockLabel")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 1

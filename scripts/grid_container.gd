@@ -5,9 +5,10 @@ extends GridContainer
 # Item holder
 @export var tileBG: PackedScene
 # Board rows
-@export var height: int = 9
+@export var height: int = 5
 # Patterns for board check: [[(0, -1), (0, -2)], [(-1, 0), (1, 0)], [(0, -1), (0, 1)], [(1, 0), (2, 0)], [(0, 1), (0, 2)], [(-1, 0), (-2, 0)]]
 @export var patterns: Array[PackedVector2Array]
+
 
 # Buttons
 @export var restart_btn: Button
@@ -142,14 +143,14 @@ func initialize_items_array() -> void:
 			else:
 				m3item = item_scene.pick_random()
 			temp_item.create_item(m3item, x, y, true)
-			$"../../../Sound_hoot_small".play()
+			$"../../../../Sound_hoot_small".play()
 
 			# Continue to change item if there is a match
 			var loops: int = 0
 			while match_at(x, y, temp_item.get_color()) and loops < 100:
 				m3item = item_scene.pick_random()
 				temp_item.create_item(m3item, x, y, true)
-				$"../../../Sound_hoot_small".play()
+				$"../../../../Sound_hoot_small".play()
 				loops += 1
 
 
@@ -203,7 +204,7 @@ func swap(a: TileBg, b: TileBg) -> void:
 	touch_count = 0
 	
 	# Run animation
-	$"../../../Sound_hoot".play()
+	$"../../../../Sound_hoot".play()
 	a.anim_start_move(a_prev_pos, Vector2(-60, -60))
 	b.anim_start_move(b_prev_pos, Vector2(-60, -60))
 
@@ -227,7 +228,7 @@ func touch_process(tile: TileBg) -> void:
 	
 		# Select tile
 		tile.set_select(true)
-		$"../../../Sound_hoot_small".play()
+		$"../../../../Sound_hoot_small".play()
 		
 		#touch_count += 1
 		#print("touch_count is ", touch_count)
@@ -274,7 +275,7 @@ func update_matches() -> bool:
 	# Play matched sound
 	if matched_tiles.size() > 0:
 		#print(matched_tiles)
-		$"../../../Sound_trumpet".play()
+		$"../../../../Sound_trumpet".play()
 		for tile in matched_tiles:
 			tile.anim_item_matched()
 			tile.anim_item_bg_matched()
@@ -338,7 +339,7 @@ func create_top_tiles(tile:TileBg) -> void:
 		if tile_new.get_item() == null:
 			var m3item: PackedScene = item_scene.pick_random()
 			tile_new.create_item(m3item, item, tile.y_pos, true)
-			$"../../../Sound_hoot_small".play()
+			$"../../../../Sound_hoot_small".play()
 			
 			# DEBUG COLOR
 			#var c: Control = tile_new.get_item()
