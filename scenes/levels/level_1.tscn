@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cwiuufqcn40fw"]
+[gd_scene load_steps=14 format=3 uid="uid://cwiuufqcn40fw"]
 
 [ext_resource type="AudioStream" uid="uid://tan7y1jtlycc" path="res://assets/sounds/1-car-hooting.mp3" id="1_50lm2"]
 [ext_resource type="Script" path="res://scripts/grid_container.gd" id="1_pj7r0"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bby3ifx7scp4b" path="res://scenes/tile_bg.tscn" id="2_iban4"]
 [ext_resource type="PackedScene" uid="uid://b1xnw25kabgqy" path="res://scenes/items/GreenItem.tscn" id="3_cb4x0"]
 [ext_resource type="AudioStream" uid="uid://d3d41672mbp3y" path="res://assets/sounds/3_toy-trumpet.mp3" id="3_qbiqk"]
+[ext_resource type="AudioStream" uid="uid://beponip3n3rsp" path="res://assets/sounds/4_error.mp3" id="4_n7sp8"]
 [ext_resource type="PackedScene" uid="uid://hcqnlg3ros7s" path="res://scenes/items/RedItem.tscn" id="4_uniwt"]
 [ext_resource type="PackedScene" uid="uid://dk0y3lc0xwbk3" path="res://scenes/items/VioletItem.tscn" id="5_4ebei"]
 [ext_resource type="PackedScene" uid="uid://ccq48tf7ittxg" path="res://scenes/items/YellowItem.tscn" id="6_gvn5p"]
@@ -29,6 +30,10 @@ stream = ExtResource("2_hbgfg")
 
 [node name="Sound_trumpet" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_qbiqk")
+
+[node name="Sound_error" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_n7sp8")
+volume_db = -15.0
 
 [node name="Score" type="Label" parent="."]
 layout_mode = 1
@@ -59,6 +64,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="TextureRect" type="Sprite2D" parent="VBoxContainer/HBoxContainer/Board"]
+visible = false
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("12_k8rq5")
 

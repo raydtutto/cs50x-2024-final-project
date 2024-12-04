@@ -7,12 +7,16 @@ var m3item : Control
 #@onready var m3item_bg = get_node("res://scenes/tiles/tile.tscn")
 
 signal on_touch
+signal on_swipe
 
 var x_pos: int
 var y_pos: int
 
 var selected_on: bool = false
 
+var start_mouse_position : Vector2 = Vector2(0,0)
+var end_mouse_position : Vector2 = Vector2(0,0)
+var pressed : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -26,9 +30,39 @@ func _ready() -> void:
 
 # Check mouse event
 func _gui_input(event: InputEvent) -> void:
+
+	# Tap or click
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			on_touch.emit(self)
+		if event.is_pressed():
+			pressed = true
+			start_mouse_position = event.position
+		else: # release or cancel
+			end_mouse_position = event.position
+			if pressed:
+				on_touch.emit(self)
+			pressed = false
+
+	# Swipe
+	elif event is InputEventMouseMotion and pressed:
+		# Swipe to right
+		if event.position.x > start_mouse_position.x + 25:
+			pressed = false
+			on_swipe.emit(self, ItemProp.Touch.RIGHT)
+		# Swipe to left
+		elif event.position.x < start_mouse_position.x - 25:
+			pressed = false
+			on_swipe.emit(self, ItemProp.Touch.LEFT)
+		# Swipe to down
+		elif event.position.y > start_mouse_position.y + 25:
+			pressed = false
+			on_swipe.emit(self, ItemProp.Touch.DOWN)
+		# Swipe to up
+		elif event.position.y < start_mouse_position.y - 25:
+			pressed = false
+			on_swipe.emit(self, ItemProp.Touch.UP)
+		
+		return
+	
 
 
 # Add item to board
@@ -67,6 +101,7 @@ func get_holder() -> Control:
 
 # Set selected status
 func set_select(value: bool) -> void:
+	print("Set selected item")
 	if m3item:
 		var player: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
 		if not player:
@@ -79,6 +114,7 @@ func set_select(value: bool) -> void:
 				selected_on = true
 				player.play("selected")
 		else:
+			print("Unselect item")
 			selected_on = false
 			player.play("RESET")
 	else:
@@ -100,7 +136,9 @@ func get_color() -> ItemProp.ItemTypes:
 
 func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 	if not m3item:
+		print("No item found")
 		return
+	
 	m3item.position = prev_pos
 	var tween: Tween = get_tree().create_tween()
 	
@@ -122,7 +160,10 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 
 
 func anim_new_item_appearance() -> void:
-	
+	if not m3item:
+		print("No item found")
+		return
+
 	# Set scale with bounce
 	var tween: Tween = get_tree().create_tween()
 	m3item.scale = Vector2(.7, .7)
@@ -138,22 +179,42 @@ func anim_new_item_appearance() -> void:
 
 # Set selected status
 func anim_item_matched() -> void:
-	if m3item:
-		# Set opacity
-		await get_tree().create_timer(.20).timeout
-		var fade_out: Tween = get_tree().create_tween()
-		m3item.modulate = Color(1, 1, 1, 1)
-		fade_out.tween_property(m3item, "modulate", Color(1,1,1,0), .10).set_ease(Tween.EASE_OUT)
-		fade_out.play()
+	if not m3item:
+		print("No item found")
+		return
+
+	# Set opacity
+	await get_tree().create_timer(.20).timeout
+	var fade_out: Tween = get_tree().create_tween()
+	m3item.modulate = Color(1, 1, 1, 1)
+	fade_out.tween_property(m3item, "modulate", Color(1,1,1,0), .10).set_ease(Tween.EASE_OUT)
+	fade_out.play()
 
 
 # Set selected status
 func anim_item_bg_matched() -> void:
-	if m3item:
-		var player: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
-		if not player:
-			print("No matched animation")
-			return
-		player.play("matched")
-	else:
+	if not m3item:
 		print("No item found")
+		return
+
+	var player: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
+	if not player:
+		print("No matched animation")
+		return
+	player.play("matched")
+
+
+func anim_error() -> void:
+	if not m3item:
+		print("No item found")
+		return
+	
+	var player: AnimationPlayer = find_child("anim_player_item",true) as AnimationPlayer
+	var player_bg: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
+	
+	if not player or not player_bg:
+		return
+
+	player.play("error")
+	player_bg.stop(false)
+	player_bg.play("error")
