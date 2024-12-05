@@ -1,26 +1,22 @@
 extends Control
 class_name TileBg
 
-var m3item : Control
-@export var m3item_bg : PackedScene
-
-#@onready var m3item_bg = get_node("res://scenes/tiles/tile.tscn")
+# Item node
+var m3item: Control
+@export var m3item_bg: PackedScene
 
 signal on_touch
 signal on_swipe
 
+# Position
 var x_pos: int
 var y_pos: int
 
+# Touch process
 var selected_on: bool = false
-
-var start_mouse_position : Vector2 = Vector2(0,0)
-var end_mouse_position : Vector2 = Vector2(0,0)
-var pressed : bool = false
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass
+var start_mouse_position: Vector2 = Vector2(0,0)
+var end_mouse_position: Vector2 = Vector2(0,0)
+var pressed: bool = false
 
 
 # ------------------------------------------------------------
@@ -30,7 +26,6 @@ func _ready() -> void:
 
 # Check mouse event
 func _gui_input(event: InputEvent) -> void:
-
 	# Tap or click
 	if event is InputEventMouseButton:
 		if event.is_pressed():
@@ -41,6 +36,7 @@ func _gui_input(event: InputEvent) -> void:
 			if pressed:
 				on_touch.emit(self)
 			pressed = false
+			return
 
 	# Swipe
 	elif event is InputEventMouseMotion and pressed:
@@ -60,29 +56,33 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.position.y < start_mouse_position.y - 25:
 			pressed = false
 			on_swipe.emit(self, ItemProp.Touch.UP)
-		
 		return
-	
 
 
 # Add item to board
 func create_item(item: PackedScene, x:int, y:int, instantly: bool=false) -> void:
 	m3item = item.instantiate()
+	
+	# Add child item background
 	var item_bg = m3item_bg.instantiate() as Control
 	m3item.add_child(item_bg)
 	item_bg.z_index = -1
-	#print("Color: ", m3item.color)
+
+	# Get holder's children
 	var holder_children: Array = $holder.get_children()
+
+	# Free already existed children
 	for child in holder_children:
 		$holder.remove_child(child)
+
+	# Add child item
 	$holder.add_child(m3item)
+
 	# Add coordinates
 	x_pos = x
 	y_pos = y
-	# DEBUG
-	#var text: String = "c: %d, x: %d, y: %d" % [m3item.color, x_pos, y_pos]
-	#$Label.set_text(text)
-	# TODO: animation
+
+	# Animation
 	anim_new_item_appearance()
 
 
@@ -91,21 +91,21 @@ func get_item() -> Control:
 	return m3item
 
 
+# Set item
 func set_item(item: Control) -> void:
 	m3item = item
 
 
+# Get holder
 func get_holder() -> Control:
 	return $holder
 
 
 # Set selected status
 func set_select(value: bool) -> void:
-	print("Set selected item")
 	if m3item:
 		var player: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
 		if not player:
-			print("No select animation")
 			return
 		if value:
 			if selected_on:
@@ -134,14 +134,18 @@ func get_color() -> ItemProp.ItemTypes:
 # ------------------------------------------------------------
 
 
+# Direction movement
 func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 	if not m3item:
 		print("No item found")
 		return
-	
+
+	# Get current position
 	m3item.position = prev_pos
-	var tween: Tween = get_tree().create_tween()
 	
+	# Animation tween
+	var tween: Tween = get_tree().create_tween()
+
 	# Animation for multiple rows
 	var threshold: int = prev_pos.y - next_pos.y
 	var height: int = 120
@@ -153,12 +157,13 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 		tween.tween_property(m3item, "position", next_pos, .5 * rows).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 		tween.play()
 		return
-	
+
 	# Animation for one row
 	tween.tween_property(m3item, "position", next_pos, .5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 	tween.play()
 
 
+# Item appearance
 func anim_new_item_appearance() -> void:
 	if not m3item:
 		print("No item found")
@@ -204,6 +209,7 @@ func anim_item_bg_matched() -> void:
 	player.play("matched")
 
 
+# Wrond direction movement
 func anim_error() -> void:
 	if not m3item:
 		print("No item found")

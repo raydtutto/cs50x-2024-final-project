@@ -4,9 +4,6 @@ var moves: int = 0
 
 func _ready() -> void:
 	$HUD.start_game.connect(new_game)
-
-#func game_over():
-	#$Music.stop()
 	
 func new_game() -> void:
 	var level: PackedScene = preload("res://scenes/levels/level_1.tscn")

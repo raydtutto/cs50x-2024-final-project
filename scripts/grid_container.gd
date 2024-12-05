@@ -8,10 +8,8 @@ extends GridContainer
 @export var height: int = 5
 # Patterns for board check: [[(0, -1), (0, -2)], [(-1, 0), (1, 0)], [(0, -1), (0, 1)], [(1, 0), (2, 0)], [(0, 1), (0, 2)], [(-1, 0), (-2, 0)]]
 @export var patterns: Array[PackedVector2Array]
-
 # Buttons
 @export var restart_btn: Button
-
 # Labels
 @export var score_lbl: Label
 
@@ -29,7 +27,6 @@ var board = Dictionary()
 var selected: bool = false
 var selected_tile: Control = null
 var last_tile: Control = null
-var touch_count: int = 0
 
 # DEBUG mode and board
 var debug_mode: bool = false
@@ -86,13 +83,11 @@ func _ready() -> void:
 
 # Start
 func start() -> void:
-	# Creating a timer and waiting for timeout signal
-	
 	# Create board
 	initialize_items_array()
 
 
-func _process(dt):
+func _process(_dt) -> void:
 	block_lbl_on(board_block)
 
 
@@ -133,7 +128,7 @@ func initialize_items_array() -> void:
 			temp_item.name = "x{0}_y{1}".format([x, y])
 			var m3item: PackedScene
 
-			# If "DEBUG MODE" get colors from debug board
+			# Get colors from debug board
 			if debug_mode:
 				var color: int = board_debug[x][y]
 				m3item = item_scene[color-1]
@@ -149,7 +144,6 @@ func initialize_items_array() -> void:
 			while match_at(x, y, temp_item.get_color()) and loops < 100:
 				m3item = item_scene.pick_random()
 				temp_item.create_item(m3item, x, y, true)
-				#$"../../../../Sound_hoot_small".play()
 				loops += 1
 
 
@@ -158,6 +152,7 @@ func swap_check(a: TileBg, b: TileBg) -> void:
 	board_block = true
 	a.set_select(true)
 	b.set_select(true)
+
 	# Run swap
 	swap(a, b)
 	await get_tree().create_timer(1).timeout
@@ -177,7 +172,7 @@ func swap_check(a: TileBg, b: TileBg) -> void:
 
 
 # Swap items
-func swap(a: TileBg, b: TileBg) -> void:	
+func swap(a: TileBg, b: TileBg) -> void:
 	# Get items
 	var temp_a: Control = a.get_item()
 	var temp_b: Control = b.get_item()
@@ -200,8 +195,6 @@ func swap(a: TileBg, b: TileBg) -> void:
 	if b.get_item() != null:
 		b.get_item().position = Vector2(-60, -60)
 
-	touch_count = 0
-	
 	# Run animation
 	$"../../../../Sound_hoot".play()
 	a.anim_start_move(a_prev_pos, Vector2(-60, -60))
@@ -210,29 +203,28 @@ func swap(a: TileBg, b: TileBg) -> void:
 
 # Touch_process
 func touch_process(tile: TileBg) -> void:
-	
 	# Block board when animation is on
 	if board_block:
 		return
 
 	# Return if last tile already exist and last tile isn't tile
 	if (last_tile 
-		and last_tile != tile 
-		and ((last_tile.x_pos + 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) 
-		or (last_tile.x_pos - 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) 
-		or (last_tile.y_pos + 1 == tile.y_pos && last_tile.x_pos == tile.x_pos) 
-		or (last_tile.y_pos - 1 == tile.y_pos && last_tile.x_pos == tile.x_pos))
-		):
+	and last_tile != tile 
+	and ((last_tile.x_pos + 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) 
+	or (last_tile.x_pos - 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) 
+	or (last_tile.y_pos + 1 == tile.y_pos && last_tile.x_pos == tile.x_pos) 
+	or (last_tile.y_pos - 1 == tile.y_pos && last_tile.x_pos == tile.x_pos))):
 		var item = last_tile
 		last_tile = null
 		selected = false
 		selected_tile = null
 		swap_check(item, tile)
+
 	# Unselect if already selected
 	else:
 		if last_tile:
 			last_tile.set_select(false)
-	
+
 		# Select tile
 		tile.set_select(true)
 		selected = true
@@ -242,33 +234,44 @@ func touch_process(tile: TileBg) -> void:
 
 
 # Swipe process: 0: TAP, 1: UP, 2: DOWN, 3: LEFT, 4: RIGHT
-func swipe_process(tile: TileBg, direction : ItemProp.Touch):
+func swipe_process(tile: TileBg, direction : ItemProp.Touch) -> void:
 	# Block board when animation is on
 	if board_block:
 		return
-	
+
+	# Prevent already selected item
 	last_tile = null
-	
 	if selected:
 		selected_tile.set_select(false)
 		pass
-	
+
+	# Swipe movements
 	var item = null
 	if tile and direction:
 		var x: int = tile.x_pos
 		var y: int = tile.y_pos
+
+		# Up
 		if (x - 1 >= 0 and x - 1 < height and y == tile.y_pos) and direction == 1:
 			item = board[tile.x_pos - 1][tile.y_pos]
 			swap_check(item, tile)
-		elif (y + 1 >= 0 and y + 1 < height and x == tile.x_pos) and direction == 4:
-			item = board[tile.x_pos][tile.y_pos + 1]
-			swap_check(item, tile)
+
+		# Down
 		elif (x + 1 >= 0 and x + 1 < height and y == tile.y_pos) and direction == 2:
 			item = board[tile.x_pos + 1][tile.y_pos]
 			swap_check(item, tile)
+
+		# Left
 		elif (y - 1 >= 0 and y - 1 < height and x == tile.x_pos) and direction == 3:
 			item = board[tile.x_pos][tile.y_pos - 1]
 			swap_check(item, tile)
+
+		# Right
+		elif (y + 1 >= 0 and y + 1 < height and x == tile.x_pos) and direction == 4:
+			item = board[tile.x_pos][tile.y_pos + 1]
+			swap_check(item, tile)
+
+		# Wrong direction out of board
 		else:
 			$"../../../../Sound_error".play()
 			tile.anim_error()
@@ -276,9 +279,7 @@ func swipe_process(tile: TileBg, direction : ItemProp.Touch):
 
 # Check for matches in rows and columns
 func match_at(x : int, y : int, color : ItemProp.ItemTypes):
-	#print("Patterns: ", patterns)
-	var sound_trumpet_played: bool = false
-	
+	# Search for match
 	for pattern in patterns:
 		assert(pattern.size() > 0, "No patterns")
 		var size: int = pattern.size()
@@ -287,7 +288,6 @@ func match_at(x : int, y : int, color : ItemProp.ItemTypes):
 			var next_y: int = y + search.y
 			if board.has(next_x):
 				if board[next_x].has(next_y):
-					var test: TileBg = board[next_x][next_y]
 					if board[next_x][next_y] != null && board[next_x][next_y].get_color() == color:
 						size -= 1
 		if size == 0:
@@ -295,6 +295,7 @@ func match_at(x : int, y : int, color : ItemProp.ItemTypes):
 	return false
 
 
+# Update matches
 func update_matches() -> bool:
 	# Free board
 	var matched_tiles: Array = []
@@ -304,7 +305,7 @@ func update_matches() -> bool:
 			if match_at(tile.x_pos, tile.y_pos, tile.get_color()):
 				matched_tiles.append(tile)
 
-	# Play matched sound
+	# Play matched sound and animation
 	if matched_tiles.size() > 0:
 		$"../../../../Sound_trumpet".play()
 		for tile in matched_tiles:
@@ -312,6 +313,7 @@ func update_matches() -> bool:
 			tile.anim_item_bg_matched()
 		await get_tree().create_timer(.3).timeout
 
+	# Free matched items
 	var freed: bool = false
 	for tile in matched_tiles:
 		# Update score
@@ -324,12 +326,11 @@ func update_matches() -> bool:
 		await get_tree().create_timer(.3).timeout
 
 	# Check board from bottom to top
-	var is_any_update: bool = false
 	for y in board[board.size()-1]:
 		var tile: TileBg = board[board.size()-1][y]
-		if move_top_tiles(tile):
-			is_any_update = true
+		move_top_tiles(tile)
 
+	# Create new items
 	if search_null_tiles_column():
 		await get_tree().create_timer(.3).timeout
 		for y in board[board.size()-1]:
@@ -337,12 +338,11 @@ func update_matches() -> bool:
 			create_top_tiles(tile)
 		await get_tree().create_timer(.3).timeout
 		return await update_matches()
-	
 	return true
+
 
 # Move items from top to bottom
 func move_top_tiles(tile:TileBg) -> bool:
-	#print("Check top: tile is ", tile)
 	var offset: int = 1
 	var updated: bool = false
 
@@ -371,12 +371,6 @@ func create_top_tiles(tile:TileBg) -> void:
 			var m3item: PackedScene = item_scene.pick_random()
 			tile_new.create_item(m3item, item, tile.y_pos, true)
 			$"../../../../Sound_hoot_small".play()
-			
-			# DEBUG COLOR
-			#var c: Control = tile_new.get_item()
-			##print(c.self_modulate, c.modulate)
-			#c.set_modulate(Color(1, 0.5, 1, 0.5))
-			#print(c.self_modulate, c.modulate)
 
 
 # Search null tiles in column
@@ -386,6 +380,7 @@ func search_null_tiles_column() -> bool:
 			if board[x][y].get_item() == null:
 				return true
 	return false
+
 
 func increase_score() -> void:
 	score += 1
