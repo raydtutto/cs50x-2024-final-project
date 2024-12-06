@@ -6,8 +6,17 @@ extends GridContainer
 @export var tileBG: PackedScene
 # Board rows
 @export var height: int = 5
+
 # Patterns for board check: [[(0, -1), (0, -2)], [(-1, 0), (1, 0)], [(0, -1), (0, 1)], [(1, 0), (2, 0)], [(0, 1), (0, 2)], [(-1, 0), (-2, 0)]]
 @export var patterns: Array[PackedVector2Array]
+
+# Pattens for possible matches:
+	# Horizontal [(0, -1), (-1, -2)], [(0, -1), (1, -2)], [(0, 1), (-1, 2)], [(0, 1), (1, 2)]
+	# Vertical [(-1, 0), (-2, -1)], [(-1, 0), (-2, 1)], [(1, 0), (2, -1)], [(1, 0), (2, 1)]
+	# Offset horizontal [(0, 2), (-1, 1)], [(0, 2),(1, 1)], [(0, -2), (-1, -1)], [(0, -2), (1, -1)]
+	# Offset vertical [(-2, 0), (-1, -1)], [(-2, 0),(-1, 1)], [(2, 0), (1, -1)], [(2, 0), (1, 1)]
+@export var possible_matches_patterns: Array[PackedVector2Array]
+
 # Buttons
 @export var restart_btn: Button
 # Labels
@@ -35,13 +44,13 @@ var board_debug: Dictionary = {
 		0: ItemProp.ItemTypes.BLUE,
 		1: ItemProp.ItemTypes.RED,
 		2: ItemProp.ItemTypes.GREEN,
-		3: ItemProp.ItemTypes.GREEN,
+		3: ItemProp.ItemTypes.VIOLET,
 		4: ItemProp.ItemTypes.GREEN
 		},
 	1: {
 		0: ItemProp.ItemTypes.VIOLET,
-		1: ItemProp.ItemTypes.GREEN,
-		2: ItemProp.ItemTypes.RED,
+		1: ItemProp.ItemTypes.YELLOW,
+		2: ItemProp.ItemTypes.YELLOW,
 		3: ItemProp.ItemTypes.BLUE,
 		4: ItemProp.ItemTypes.RED
 		},
@@ -54,17 +63,17 @@ var board_debug: Dictionary = {
 		},
 	3: {
 		0: ItemProp.ItemTypes.BLUE,
-		1: ItemProp.ItemTypes.VIOLET,
+		1: ItemProp.ItemTypes.YELLOW,
 		2: ItemProp.ItemTypes.GREEN,
 		3: ItemProp.ItemTypes.GREEN,
 		4: ItemProp.ItemTypes.RED
 		},
 	4: {
-		0: ItemProp.ItemTypes.VIOLET,
+		0: ItemProp.ItemTypes.RED,
 		1: ItemProp.ItemTypes.BLUE,
 		2: ItemProp.ItemTypes.RED,
 		3: ItemProp.ItemTypes.YELLOW,
-		4: ItemProp.ItemTypes.GREEN
+		4: ItemProp.ItemTypes.BLUE
 		}
 }
 
@@ -73,6 +82,7 @@ var board_debug: Dictionary = {
 func _ready() -> void:
 	# Scene preparation
 	assert(patterns.size() > 0, "patterns should be properly filled")
+	assert(possible_matches_patterns.size() > 0, "possible matches patterns should be properly filled")
 	assert(restart_btn)
 	restart_btn.pressed.connect(start)
 	assert(score_lbl)
@@ -85,14 +95,21 @@ func _ready() -> void:
 func start() -> void:
 	# Create board
 	initialize_items_array()
+	search_possible_matches()
+	
+	# Check board for possible matches
+	#if not search_possible_matches():
+		#var possible_matches_exist: bool = false
+		#initialize_items_array()
 
 
+# Check block status every frame
 func _process(_dt) -> void:
 	block_lbl_on(board_block)
 
 
 # ------------------------------------------------------------
-# MATCH3 LOGIC
+# CREATE BOARD
 # ------------------------------------------------------------
 
 
@@ -147,11 +164,18 @@ func initialize_items_array() -> void:
 				loops += 1
 
 
+# ------------------------------------------------------------
+# SWAP ITEMS
+# ------------------------------------------------------------
+
+
 # Check swap before swap()
 func swap_check(a: TileBg, b: TileBg) -> void:
 	board_block = true
 	a.set_select(true)
 	b.set_select(true)
+	print("a: ", a.x_pos, ", ", a.y_pos)
+	print("b: ", b.x_pos, ", ", b.y_pos)
 
 	# Run swap
 	swap(a, b)
@@ -166,7 +190,8 @@ func swap_check(a: TileBg, b: TileBg) -> void:
 
 	# Check board
 	await update_matches()
-
+	#while not search_possible_matches():
+		#await update_matches()
 	# Unblock board
 	board_block = false
 
@@ -199,6 +224,11 @@ func swap(a: TileBg, b: TileBg) -> void:
 	$"../../../../Sound_hoot".play()
 	a.anim_start_move(a_prev_pos, Vector2(-60, -60))
 	b.anim_start_move(b_prev_pos, Vector2(-60, -60))
+
+
+# ------------------------------------------------------------
+# TOUCH AND SWIPE
+# ------------------------------------------------------------
 
 
 # Touch_process
@@ -277,6 +307,11 @@ func swipe_process(tile: TileBg, direction : ItemProp.Touch) -> void:
 			tile.anim_error()
 
 
+# ------------------------------------------------------------
+# MATCHES
+# ------------------------------------------------------------
+
+
 # Check for matches in rows and columns
 func match_at(x : int, y : int, color : ItemProp.ItemTypes):
 	# Search for match
@@ -336,6 +371,10 @@ func update_matches() -> bool:
 		for y in board[board.size()-1]:
 			var tile: TileBg = board[board.size()-1][y]
 			create_top_tiles(tile)
+			
+			# Search for possible matches
+			#if not search_possible_matches():
+				#return await update_matches()
 		await get_tree().create_timer(.3).timeout
 		return await update_matches()
 	return true
@@ -382,6 +421,55 @@ func search_null_tiles_column() -> bool:
 	return false
 
 
+# ------------------------------------------------------------
+# POSSIBLE MATCHES
+# ------------------------------------------------------------
+
+# Search for possible matches
+func search_possible_matches() -> bool: #use patterns
+	# look for two similar colors with offset
+	# Look for two similar colors near each other:
+		# Look for the third similar color in neighboring columns and rows:
+			# If third item found:
+				# possible_matches_exist = true
+			# Else:
+				# shuffle_board()
+	# Search for match
+	
+	# Check all tiles within board
+	for x: int in range(self.columns):
+		for y: int in range(height):
+			# Check patterns for current tile
+			var color = board[x][y].get_color()
+			for pattern in possible_matches_patterns:
+				assert(possible_matches_patterns.size() > 0, "No patterns")
+				var size: int = pattern.size()
+				for search in pattern:
+					var next_x: int = x + search.x
+					var next_y: int = y + search.y
+					if board.has(next_x):
+						if board[next_x].has(next_y):
+							if board[next_x][next_y] != null && board[next_x][next_y].get_color() == color:
+								size -= 1
+				if size == 0:
+					print("Matches exist at ", x, ", ", y)
+					return true
+
+	print("No matches")
+	return false
+
+# Shuffle board
+func shuffle_board() -> void:
+	# If possible_matches_exist == false
+		# Update board
+	pass
+
+
+# ------------------------------------------------------------
+# SCORE UPDATE
+# ------------------------------------------------------------
+
+
 func increase_score() -> void:
 	score += 1
 	var text: String = "Score: %d" % score
@@ -394,10 +482,15 @@ func reset_score() -> void:
 	score_lbl.set_text(text)
 
 
+# ------------------------------------------------------------
+# DEBUG BLOCK
+# ------------------------------------------------------------
+
+
 # DEBUG block on/off
 func block_lbl_on(state: bool) -> void:
 	if debug_mode:
-		$"../../../BlockLabel".show()
+		$"../../../../BlockLabel".show()
 		var text: String = "Block: on"
 		if not state:
 			text = "Block: off"
