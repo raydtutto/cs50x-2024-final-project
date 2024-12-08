@@ -28,6 +28,7 @@ var board_block: bool = false
 
 # Game score
 var score: int = 0
+var provide_score: bool = false
 
 # Dictionary of items' dictionaries
 var board = Dictionary()
@@ -95,12 +96,20 @@ func _ready() -> void:
 func start() -> void:
 	# Create board
 	initialize_items_array()
-	search_possible_matches()
 	
-	# Check board for possible matches
-	#if not search_possible_matches():
-		#var possible_matches_exist: bool = false
-		#initialize_items_array()
+	while not search_possible_matches():
+		$"../../../../Sound_shuffle".play()
+				
+		# Play error animation
+		for row: int in range(self.columns):
+			for column: int in range(height):
+				var item = board[row][column]
+				item.anim_item_error()
+				
+		await get_tree().create_timer(.3).timeout
+		initialize_items_array()
+	
+	provide_score = false
 
 
 # Check block status every frame
@@ -113,17 +122,30 @@ func _process(_dt) -> void:
 # ------------------------------------------------------------
 
 
+# Clear filled board
+#func clear_board() -> void:
+	#if not board.is_empty():
+		## Clear board
+		#for tile in get_children():
+			#tile.queue_free()
+		#board.clear()
+	#if not provide_score:
+		#reset_score()
+	#last_tile = null
+
+
 # Initialize the board 2D array
 func initialize_items_array() -> void:
-	# Clear filled board
+	# Clear board
 	if not board.is_empty():
 		# Clear board
 		for tile in get_children():
 			tile.queue_free()
 		board.clear()
-	reset_score()
+	if not provide_score:
+		reset_score()
 	last_tile = null
-
+	
 	# Create board
 	for x: int in range(self.columns):
 		board[x] = Dictionary()
@@ -163,6 +185,29 @@ func initialize_items_array() -> void:
 				temp_item.create_item(m3item, x, y, true)
 				loops += 1
 
+
+# Populate empty board
+#func populate_board(temp_item: Control):
+	#for x: int in range(self.columns):
+		#for y: int in range(height):
+			#var m3item: PackedScene
+			## Get colors from debug board
+			#if debug_mode:
+				#var color: int = board_debug[x][y]
+				#m3item = item_scene[color-1]
+#
+			## Pick random item from the list of items
+			#else:
+				#m3item = item_scene.pick_random()
+			#temp_item.create_item(m3item, x, y, true)
+			#$"../../../../Sound_hoot_small".play()
+#
+			## Continue to change item if there is a match
+			#var loops: int = 0
+			#while match_at(x, y, temp_item.get_color()) and loops < 100:
+				#m3item = item_scene.pick_random()
+				#temp_item.create_item(m3item, x, y, true)
+				#loops += 1
 
 # ------------------------------------------------------------
 # SWAP ITEMS
@@ -304,7 +349,7 @@ func swipe_process(tile: TileBg, direction : ItemProp.Touch) -> void:
 		# Wrong direction out of board
 		else:
 			$"../../../../Sound_error".play()
-			tile.anim_error()
+			tile.anim_item_error()
 
 
 # ------------------------------------------------------------
@@ -371,11 +416,27 @@ func update_matches() -> bool:
 		for y in board[board.size()-1]:
 			var tile: TileBg = board[board.size()-1][y]
 			create_top_tiles(tile)
-			
-			# Search for possible matches
-			#if not search_possible_matches():
-				#return await update_matches()
+		
 		await get_tree().create_timer(.3).timeout
+		
+		# Search for possible matches
+		if not search_possible_matches():
+			provide_score = true
+			# Wait for animations
+			await get_tree().create_timer(.3).timeout
+				
+			# Play error animation
+			$"../../../../Sound_shuffle".play()
+			for row: int in range(self.columns):
+				for column: int in range(height):
+					var item = board[row][column]
+					item.anim_item_error()
+			await get_tree().create_timer(.3).timeout
+				
+			# Create new board
+			start()
+				
+			return false
 		return await update_matches()
 	return true
 
@@ -410,6 +471,7 @@ func create_top_tiles(tile:TileBg) -> void:
 			var m3item: PackedScene = item_scene.pick_random()
 			tile_new.create_item(m3item, item, tile.y_pos, true)
 			$"../../../../Sound_hoot_small".play()
+	await get_tree().create_timer(.3).timeout
 
 
 # Search null tiles in column
@@ -426,16 +488,7 @@ func search_null_tiles_column() -> bool:
 # ------------------------------------------------------------
 
 # Search for possible matches
-func search_possible_matches() -> bool: #use patterns
-	# look for two similar colors with offset
-	# Look for two similar colors near each other:
-		# Look for the third similar color in neighboring columns and rows:
-			# If third item found:
-				# possible_matches_exist = true
-			# Else:
-				# shuffle_board()
-	# Search for match
-	
+func search_possible_matches() -> bool:
 	# Check all tiles within board
 	for x: int in range(self.columns):
 		for y: int in range(height):
@@ -460,9 +513,7 @@ func search_possible_matches() -> bool: #use patterns
 
 # Shuffle board
 func shuffle_board() -> void:
-	# If possible_matches_exist == false
-		# Update board
-	pass
+	start()
 
 
 # ------------------------------------------------------------

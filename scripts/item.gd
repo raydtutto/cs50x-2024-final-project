@@ -210,7 +210,7 @@ func anim_item_bg_matched() -> void:
 
 
 # Wrond direction movement
-func anim_error() -> void:
+func anim_item_error() -> void:
 	if not m3item:
 		print("No item found")
 		return

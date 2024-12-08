@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cwiuufqcn40fw"]
+[gd_scene load_steps=15 format=3 uid="uid://cwiuufqcn40fw"]
 
 [ext_resource type="AudioStream" uid="uid://tan7y1jtlycc" path="res://assets/sounds/1-car-hooting.mp3" id="1_50lm2"]
 [ext_resource type="Script" path="res://scripts/grid_container.gd" id="1_pj7r0"]
@@ -10,6 +10,7 @@
 [ext_resource type="AudioStream" uid="uid://beponip3n3rsp" path="res://assets/sounds/4_error.mp3" id="4_n7sp8"]
 [ext_resource type="PackedScene" uid="uid://hcqnlg3ros7s" path="res://scenes/items/RedItem.tscn" id="4_uniwt"]
 [ext_resource type="PackedScene" uid="uid://dk0y3lc0xwbk3" path="res://scenes/items/VioletItem.tscn" id="5_4ebei"]
+[ext_resource type="AudioStream" uid="uid://clgo3n5nn4fbe" path="res://assets/sounds/5_shuffle.mp3" id="5_fs6ht"]
 [ext_resource type="PackedScene" uid="uid://ccq48tf7ittxg" path="res://scenes/items/YellowItem.tscn" id="6_gvn5p"]
 [ext_resource type="Texture2D" uid="uid://ddu5rq37w86uw" path="res://assets/ui/icons/menu.png" id="7_5qu6v"]
 [ext_resource type="Texture2D" uid="uid://dghbe7cgxvd24" path="res://assets/sprites/tiles/bg_5x5_dot.png" id="12_k8rq5"]
@@ -34,6 +35,9 @@ stream = ExtResource("3_qbiqk")
 [node name="Sound_error" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_n7sp8")
 volume_db = -15.0
+
+[node name="Sound_shuffle" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_fs6ht")
 
 [node name="Score" type="Label" parent="."]
 layout_mode = 1
