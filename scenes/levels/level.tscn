@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=4 uid="uid://cwiuufqcn40fw"]
+[gd_scene load_steps=22 format=4 uid="uid://cwiuufqcn40fw"]
 
 [ext_resource type="Script" path="res://scripts/level.gd" id="1_2pl2f"]
 [ext_resource type="FontFile" uid="uid://d1vxjc8lhjbsa" path="res://assets/fonts/Inter_18pt-Light.ttf" id="2_csbt6"]
@@ -6,12 +6,11 @@
 [ext_resource type="Texture2D" uid="uid://cbpq37rk6ipky" path="res://assets/ui/icons/sound_off.png" id="3_co02v"]
 [ext_resource type="Texture2D" uid="uid://dldco0xihiu0f" path="res://assets/ui/icons/home.png" id="5_fv4o6"]
 [ext_resource type="Texture2D" uid="uid://cdbnfv2gef4qn" path="res://assets/ui/icons/sound_on.png" id="6_8l5op"]
-[ext_resource type="AudioStream" uid="uid://tan7y1jtlycc" path="res://assets/sounds/1-car-hooting.mp3" id="7_wuphb"]
-[ext_resource type="AudioStream" uid="uid://w7k751as84sg" path="res://assets/sounds/2-squeaky-toy.mp3" id="8_sda1r"]
+[ext_resource type="AudioStream" uid="uid://tan7y1jtlycc" path="res://assets/sounds/1_car_hooting.mp3" id="7_wuphb"]
+[ext_resource type="AudioStream" uid="uid://w7k751as84sg" path="res://assets/sounds/2_squeaky_toy.mp3" id="8_sda1r"]
 [ext_resource type="AudioStream" uid="uid://d3d41672mbp3y" path="res://assets/sounds/3_toy-trumpet.mp3" id="9_x0slt"]
 [ext_resource type="AudioStream" uid="uid://beponip3n3rsp" path="res://assets/sounds/4_error.mp3" id="10_uc6nd"]
 [ext_resource type="AudioStream" uid="uid://clgo3n5nn4fbe" path="res://assets/sounds/5_shuffle.mp3" id="11_yd0ic"]
-[ext_resource type="Texture2D" uid="uid://dghbe7cgxvd24" path="res://assets/sprites/tiles/bg_5x5_dot.png" id="12_7uwgi"]
 [ext_resource type="Script" path="res://scripts/grid_container.gd" id="13_1a5qc"]
 [ext_resource type="AudioStream" uid="uid://bwbypge8el5l" path="res://assets/sounds/6_tap.mp3" id="13_ebxal"]
 [ext_resource type="PackedScene" uid="uid://dba81ee6wklh0" path="res://scenes/items/BlueItem.tscn" id="14_fmjc7"]
@@ -36,7 +35,9 @@ font_name = "Inter 18pt"
 style_name = "Bold"
 font_style = 1
 font_weight = 700
+subpixel_positioning = 0
 msdf_pixel_range = 8
+msdf_size = 128
 cache/0/16/0/ascent = 16.0
 cache/0/16/0/descent = 4.0
 cache/0/16/0/underline_position = 2.96875
@@ -108,18 +109,41 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 120
+theme_override_constants/margin_left = 100
 theme_override_constants/margin_top = 240
-theme_override_constants/margin_right = 120
+theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 120
+
+[node name="Board" type="Control" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/Board" node_paths=PackedStringArray("score_lbl", "block_lbl")]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 7
+script = ExtResource("13_1a5qc")
+item_scene = Array[PackedScene]([ExtResource("14_fmjc7"), ExtResource("15_jm5q8"), ExtResource("16_eivqe"), ExtResource("17_ecmbp"), ExtResource("18_mmcoy")])
+tileBG = ExtResource("19_jeykt")
+patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, 0, -2), PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0)])
+possible_matches_patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, -1, -2), PackedVector2Array(0, -1, 1, -2), PackedVector2Array(0, -1, 0, -3), PackedVector2Array(0, 1, -1, 2), PackedVector2Array(0, 1, 1, 2), PackedVector2Array(0, 1, 0, 3), PackedVector2Array(-1, 0, -2, -1), PackedVector2Array(-1, 0, -2, 1), PackedVector2Array(-1, 0, -3, 0), PackedVector2Array(1, 0, 2, -1), PackedVector2Array(1, 0, 2, 1), PackedVector2Array(1, 0, 3, 0), PackedVector2Array(0, -2, -1, -1), PackedVector2Array(0, -2, 1, -1), PackedVector2Array(0, 2, -1, 1), PackedVector2Array(0, 2, 1, 1), PackedVector2Array(-2, 0, -1, -1), PackedVector2Array(-2, 0, -1, 1), PackedVector2Array(2, 0, 1, -1), PackedVector2Array(2, 0, 1, 1)])
+score_lbl = NodePath("../../VBoxContainer/ScoreContainer/Score")
+block_lbl = NodePath("../../VBoxContainer/ScoreContainer/BlockLabel")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 60
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
+mouse_filter = 2
 
 [node name="ScoreContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -212,60 +236,9 @@ stream = ExtResource("11_yd0ic")
 [node name="Sound_tap" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("13_ebxal")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-
-[node name="Board" type="Control" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="TextureRect" type="Sprite2D" parent="VBoxContainer/HBoxContainer/Board"]
-visible = false
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("12_7uwgi")
-
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer/Board" node_paths=PackedStringArray("score_lbl", "block_lbl")]
-layout_direction = 1
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 5
-script = ExtResource("13_1a5qc")
-item_scene = Array[PackedScene]([ExtResource("14_fmjc7"), ExtResource("15_jm5q8"), ExtResource("16_eivqe"), ExtResource("17_ecmbp"), ExtResource("18_mmcoy")])
-tileBG = ExtResource("19_jeykt")
-height = 5
-patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, 0, -2), PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0)])
-possible_matches_patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, -1, -2), PackedVector2Array(0, -1, 1, -2), PackedVector2Array(0, -1, 0, -3), PackedVector2Array(0, 1, -1, 2), PackedVector2Array(0, 1, 1, 2), PackedVector2Array(0, 1, 0, 3), PackedVector2Array(-1, 0, -2, -1), PackedVector2Array(-1, 0, -2, 1), PackedVector2Array(-1, 0, -3, 0), PackedVector2Array(1, 0, 2, -1), PackedVector2Array(1, 0, 2, 1), PackedVector2Array(1, 0, 3, 0), PackedVector2Array(0, -2, -1, -1), PackedVector2Array(0, -2, 1, -1), PackedVector2Array(0, 2, -1, 1), PackedVector2Array(0, 2, 1, 1), PackedVector2Array(-2, 0, -1, -1), PackedVector2Array(-2, 0, -1, 1), PackedVector2Array(2, 0, 1, -1), PackedVector2Array(2, 0, 1, 1)])
-score_lbl = NodePath("../../../../MarginContainer/VBoxContainer/ScoreContainer/Score")
-block_lbl = NodePath("../../../../MarginContainer/VBoxContainer/ScoreContainer/BlockLabel")
-
 [connection signal="button_down" from="MarginContainer/VBoxContainer/Footer/HomeButton" to="." method="_on_home_button_button_down"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Footer/HomeButton" to="." method="_on_home_button_button_up"]
-[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/Footer/HomeButton" to="." method="_on_home_button_mouse_entered"]
-[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/Footer/HomeButton" to="." method="_on_home_button_mouse_exited"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Footer/HomeButton" to="." method="_on_home_button_pressed"]
 [connection signal="button_down" from="MarginContainer/VBoxContainer/Footer/SoundButton" to="." method="_on_sound_button_button_down"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Footer/SoundButton" to="." method="_on_sound_button_button_up"]
-[connection signal="focus_entered" from="MarginContainer/VBoxContainer/Footer/SoundButton" to="." method="_on_sound_button_focus_entered"]
-[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/Footer/SoundButton" to="." method="_on_sound_button_mouse_entered"]
-[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/Footer/SoundButton" to="." method="_on_sound_button_mouse_exited"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Footer/SoundButton" to="." method="_on_sound_button_pressed"]

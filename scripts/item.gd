@@ -60,7 +60,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 # Add item to board
-func create_item(item: PackedScene, x:int, y:int, instantly: bool=false) -> void:
+func create_item(item: PackedScene, x:int, y:int) -> void:
 	m3item = item.instantiate()
 	
 	# Add child item background
@@ -137,7 +137,6 @@ func get_color() -> ItemProp.ItemTypes:
 # Direction movement
 func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 	if not m3item:
-		print("No item found")
 		return
 
 	# Get current position
@@ -147,7 +146,7 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 	var tween: Tween = get_tree().create_tween()
 
 	# Animation for multiple rows
-	var threshold: int = prev_pos.y - next_pos.y
+	var threshold: int = int(prev_pos.y) - int(next_pos.y)
 	var height: int = 120
 	var rows: int = threshold / height
 	if rows > 1 or rows < -1:
@@ -155,13 +154,13 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 			rows *= -1
 		if rows > 1:
 			if rows > 3:
-				tween.tween_property(m3item, "position", next_pos, .9).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
+				tween.tween_property(m3item, "position", next_pos, .8).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 				tween.play()
 				return
-			tween.tween_property(m3item, "position", next_pos, .7).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
+			tween.tween_property(m3item, "position", next_pos, .6).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 			tween.play()
 			return
-		tween.tween_property(m3item, "position", next_pos, .5 * rows).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
+		tween.tween_property(m3item, "position", next_pos, .5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 		tween.play()
 		return
 
@@ -173,7 +172,6 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 # Item appearance
 func anim_new_item_appearance() -> void:
 	if not m3item:
-		print("No item found")
 		return
 
 	# Set scale with bounce
@@ -192,7 +190,6 @@ func anim_new_item_appearance() -> void:
 # Set selected status
 func anim_item_matched() -> void:
 	if not m3item:
-		print("No item found")
 		return
 
 	# Set opacity
@@ -206,7 +203,6 @@ func anim_item_matched() -> void:
 # Set selected status
 func anim_item_bg_matched() -> void:
 	if not m3item:
-		print("No item found")
 		return
 
 	var player: AnimationPlayer = m3item.find_child("anim_player",true,false) as AnimationPlayer
@@ -219,7 +215,6 @@ func anim_item_bg_matched() -> void:
 # Wrond direction movement
 func anim_item_error() -> void:
 	if not m3item:
-		print("No item found")
 		return
 	
 	var player: AnimationPlayer = find_child("anim_player_item",true) as AnimationPlayer

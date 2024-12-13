@@ -2,16 +2,23 @@ extends Control
 
 var touch_block: bool = false
 
-@onready var scene: Control = $title
-@onready var labels: Container = $MarginContainer
-@onready var HUD: Control = $"."
-@onready var score_txt_lbl: Label = $MarginContainer/VBoxContainer/LabelScore
-@onready var score_lbl: Label = $MarginContainer/VBoxContainer/BestScore
+@onready var main_scene: Control = $"."
+var scene: Control
+var labels: Container
+var score_txt_lbl: Label
+var score_lbl: Label
 
 # Notifies `game` node that the button has been pressed
 signal start_game
 
 func _ready() -> void:
+	# Scene preparation
+	scene = main_scene.find_child("title",true,false) as Control
+	labels = main_scene.find_child("MarginContainer",true,false) as Container
+	score_txt_lbl = main_scene.find_child("LabelScore",true,false) as Label
+	score_lbl = main_scene.find_child("BestScore",true,false) as Label
+	
+	# Show best score or placeholder
 	score_lbl.hide()
 	var best_score: int = get_score()
 	if best_score > 0:

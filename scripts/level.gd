@@ -3,30 +3,37 @@ extends Control
 var screen_block: bool = false
 
 var button_tapped: bool = false
-@onready var board: Control = $VBoxContainer/HBoxContainer/Board
-@onready var score: Container = $MarginContainer/VBoxContainer/ScoreContainer
+
+@onready var main_scene: Control = $"."
+var board: Control
+var score: Container
+var sound_tap = AudioStreamPlayer
 
 # Sound button
-@onready var SoundButton: Button = $MarginContainer/VBoxContainer/Footer/SoundButton
+var SoundButton: Button
 @export var icon_sound_on: Texture2D
 @export var icon_sound_off: Texture2D
 var SoundButton_hovered: bool = false
 
 # Home button
-@onready var HomeButton: Button = $MarginContainer/VBoxContainer/Footer/HomeButton
+var HomeButton: Button
 var HomeButton_hovered: bool = false
 
 
 func _ready() -> void:
+	# Scene preparation
+	board = main_scene.find_child("Board",true,false) as Control
+	score = main_scene.find_child("ScoreContainer",true,false) as Container
+	SoundButton = main_scene.find_child("SoundButton",true,false) as Button
+	HomeButton = main_scene.find_child("HomeButton",true,false) as Button
+	sound_tap = main_scene.find_child("Sound_tap",true,false) as AudioStreamPlayer
+	
+	# Check sound icon
 	var master_bus_index = AudioServer.get_bus_index("Master")
 	if AudioServer.is_bus_mute(master_bus_index):
 		SoundButton.set_button_icon(icon_sound_off)
 	else:
 		SoundButton.set_button_icon(icon_sound_on)
-	
-	await get_tree().create_timer(.3).timeout
-	screen_block = false
-	
 
 
 # ------------------------------------------------------------
@@ -58,7 +65,7 @@ func _on_sound_button_button_down() -> void:
 	SoundButton.scale = Vector2(.95, .95)
 	button_tapped = true
 	if button_tapped:
-		$Sound_tap.play()
+		sound_tap.play()
 
 
 func _on_sound_button_button_up() -> void:
@@ -122,7 +129,7 @@ func _on_home_button_button_down() -> void:
 	HomeButton.scale = Vector2(.95, .95)
 	button_tapped = true
 	if button_tapped:
-		$Sound_tap.play()
+		sound_tap.play()
 
 
 func _on_home_button_button_up() -> void:
