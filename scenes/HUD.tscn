@@ -1,42 +1,276 @@
-[gd_scene load_steps=3 format=3 uid="uid://dfrt3yccxdk24"]
+[gd_scene load_steps=14 format=3 uid="uid://dfrt3yccxdk24"]
 
 [ext_resource type="Script" path="res://scripts/HUD.gd" id="1_8ghbl"]
 [ext_resource type="Texture2D" uid="uid://ba08pmea075p4" path="res://assets/sprites/items/yellow.png" id="2_2stxc"]
+[ext_resource type="FontFile" uid="uid://ct2dhx0t8ryp" path="res://assets/fonts/Inter_24pt-Black.ttf" id="2_ov63u"]
+[ext_resource type="FontFile" uid="uid://d1vxjc8lhjbsa" path="res://assets/fonts/Inter_18pt-Light.ttf" id="4_2silk"]
+[ext_resource type="AudioStream" uid="uid://ddolfchctyhs8" path="res://assets/music/Awkward_-_www.fesliyanstudios.com.mp3" id="5_w2bro"]
+[ext_resource type="AudioStream" uid="uid://bwbypge8el5l" path="res://assets/sounds/6_tap.mp3" id="6_awrxb"]
 
-[node name="HUD" type="CanvasLayer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aeqbj"]
+bg_color = Color(0.960784, 0.811765, 0.207843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tn4iv"]
+bg_color = Color(0.40715, 0.412061, 0.574376, 1)
+corner_radius_top_left = 90
+corner_radius_top_right = 90
+corner_radius_bottom_right = 90
+corner_radius_bottom_left = 90
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hlhbe"]
+bg_color = Color(0.191967, 0.197128, 0.304815, 1)
+corner_radius_top_left = 90
+corner_radius_top_right = 90
+corner_radius_bottom_right = 90
+corner_radius_bottom_left = 90
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6hw2p"]
+bg_color = Color(0.290196, 0.298039, 0.454902, 1)
+corner_radius_top_left = 90
+corner_radius_top_right = 90
+corner_radius_bottom_right = 90
+corner_radius_bottom_left = 90
+
+[sub_resource type="Animation" id="Animation_xet78"]
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("title/eye_panel:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("title/eye_panel:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("title:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.166667, 0.3),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("title:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.3),
+"transitions": PackedFloat32Array(2, 0.5, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.05, 1.05), Vector2(0.9, 0.9)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("MarginContainer/LabelScore:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.166667, 0.3),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("MarginContainer/LabelInfo:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.166667, 0.3),
+"transitions": PackedFloat32Array(1, 0.5),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_1ut8h"]
+resource_name = "blink"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("title/eye_panel:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3.5, 3.93333, 3.96667),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, true, true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("title/eye_panel:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(3.53333, 3.63333, 3.76667, 3.9),
+"transitions": PackedFloat32Array(2, 1, 0.5, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1, 106), Vector2(1, 106), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jejie"]
+_data = {
+"RESET": SubResource("Animation_xet78"),
+"blink": SubResource("Animation_1ut8h")
+}
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_8ghbl")
 
-[node name="MessageLabel" type="Label" parent="."]
-offset_top = 608.0
-offset_right = 1080.0
-offset_bottom = 864.0
-theme_override_font_sizes/font_size = 100
-text = "Match them all!"
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 80
+theme_override_constants/margin_top = 200
+theme_override_constants/margin_right = 80
+theme_override_constants/margin_bottom = 120
+
+[node name="LabelInfo" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.807843, 0.878431, 0.988235, 1)
+theme_override_fonts/font = ExtResource("4_2silk")
+theme_override_font_sizes/font_size = 50
+text = "CS50 2024 Final Project"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MessageSprite2D" type="Sprite2D" parent="."]
-position = Vector2(536, 480)
+[node name="LabelScore" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_fonts/font = ExtResource("4_2silk")
+theme_override_font_sizes/font_size = 50
+text = "Play to set a new record"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 8.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="title" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="endless" type="Label" parent="title"]
+z_index = -1
+layout_mode = 0
+offset_left = -540.0
+offset_top = -176.0
+offset_right = 540.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("2_ov63u")
+theme_override_font_sizes/font_size = 100
+text = "ENDLESS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="match3" type="Label" parent="title"]
+z_index = -1
+layout_mode = 0
+offset_left = -540.0
+offset_top = -76.0
+offset_right = 540.0
+offset_bottom = 180.0
+theme_override_fonts/font = ExtResource("2_ov63u")
+theme_override_font_sizes/font_size = 100
+text = "MATCH 3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="duck" type="Sprite2D" parent="title"]
+z_index = -1
+position = Vector2(-4, -254)
 texture = ExtResource("2_2stxc")
 
-[node name="StartButton" type="Button" parent="."]
-offset_left = 256.0
-offset_top = 1016.0
-offset_right = 832.0
-offset_bottom = 1208.0
-theme_override_font_sizes/font_size = 100
-text = "Match-3"
+[node name="eye_panel" type="Panel" parent="title"]
+visible = false
+layout_mode = 0
+offset_left = -44.0
+offset_top = -318.0
+offset_right = 4.0
+offset_bottom = -317.5
+theme_override_styles/panel = SubResource("StyleBoxFlat_aeqbj")
 
-[node name="ExitButton" type="Button" parent="."]
-offset_left = 256.0
-offset_top = 1296.0
-offset_right = 832.0
-offset_bottom = 1488.0
-theme_override_font_sizes/font_size = 100
-text = "Exit"
+[node name="StartButton" type="Button" parent="title"]
+layout_mode = 0
+offset_left = -228.0
+offset_top = 161.0
+offset_right = 228.0
+offset_bottom = 289.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/h_separation = 0
+theme_override_fonts/font = ExtResource("2_ov63u")
+theme_override_font_sizes/font_size = 50
+theme_override_styles/hover = SubResource("StyleBoxFlat_tn4iv")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hlhbe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_6hw2p")
+text = "START"
 
 [node name="MessageTimer" type="Timer" parent="."]
 
-[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="ExitButton" to="." method="_on_ExitButton_pressed"]
-[connection signal="timeout" from="MessageTimer" to="." method="_on_message_timer_timeout"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_jejie")
+}
+
+[node name="HomeMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_w2bro")
+volume_db = -10.0
+parameters/looping = true
+
+[node name="SoundTap" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_awrxb")
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

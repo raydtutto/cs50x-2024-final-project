@@ -125,7 +125,7 @@ func set_select(value: bool) -> void:
 func get_color() -> ItemProp.ItemTypes:
 	if m3item:
 		return m3item.color
-	print("Color is unknown")
+	#print("Color is unknown")
 	return ItemProp.ItemTypes.UNKNOWN
 
 
@@ -149,12 +149,18 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 	# Animation for multiple rows
 	var threshold: int = prev_pos.y - next_pos.y
 	var height: int = 120
-	var rows = threshold / height
+	var rows: int = threshold / height
 	if rows > 1 or rows < -1:
 		if rows < -1:
 			rows *= -1
-		if rows > 2:
-			rows /= 2.5
+		if rows > 1:
+			if rows > 3:
+				tween.tween_property(m3item, "position", next_pos, .9).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
+				tween.play()
+				return
+			tween.tween_property(m3item, "position", next_pos, .7).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
+			tween.play()
+			return
 		tween.tween_property(m3item, "position", next_pos, .5 * rows).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 		tween.play()
 		return

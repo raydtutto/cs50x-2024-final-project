@@ -6,7 +6,7 @@ func _ready() -> void:
 	$HUD.start_game.connect(new_game)
 	
 func new_game() -> void:
-	var level: PackedScene = preload("res://scenes/levels/level_1.tscn")
+	var level: PackedScene = preload("res://scenes/levels/level.tscn")
 	
 	# Clear level holder
 	for node in $level_holder.get_children():
@@ -17,4 +17,4 @@ func new_game() -> void:
 	
 	# Miscellaneous
 	$HUD.hide()
-	$Music.play()
+	#$Music.play()

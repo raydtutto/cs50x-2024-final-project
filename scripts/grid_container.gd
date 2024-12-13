@@ -18,7 +18,7 @@ extends GridContainer
 @export var possible_matches_patterns: Array[PackedVector2Array]
 
 # Buttons
-@export var restart_btn: Button
+#@export var restart_btn: Button
 # Labels
 @export var score_lbl: Label
 
@@ -84,8 +84,8 @@ func _ready() -> void:
 	# Scene preparation
 	assert(patterns.size() > 0, "patterns should be properly filled")
 	assert(possible_matches_patterns.size() > 0, "possible matches patterns should be properly filled")
-	assert(restart_btn)
-	restart_btn.pressed.connect(start)
+	#assert(restart_btn)
+	#restart_btn.pressed.connect(start)
 	assert(score_lbl)
 	assert(block_lbl)
 
@@ -513,13 +513,13 @@ func search_possible_matches() -> bool:
 
 func increase_score() -> void:
 	score += 1
-	var text: String = "Score: %d" % score
+	var text: String = "%d" % score
 	score_lbl.set_text(text)
 
 
 func reset_score() -> void:
 	score = 0
-	var text: String = "Score: %d" % score
+	var text: String = "%d" % score
 	score_lbl.set_text(text)
 
 
