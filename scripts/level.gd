@@ -1,5 +1,7 @@
 extends Control
 
+var screen_block: bool = false
+
 var button_tapped: bool = false
 @onready var board: Control = $VBoxContainer/HBoxContainer/Board
 @onready var score: Container = $MarginContainer/VBoxContainer/ScoreContainer
@@ -15,17 +17,22 @@ var SoundButton_hovered: bool = false
 var HomeButton_hovered: bool = false
 
 
-# ------------------------------------------------------------
-# Sound button
-# ------------------------------------------------------------
-
-
 func _ready() -> void:
 	var master_bus_index = AudioServer.get_bus_index("Master")
 	if AudioServer.is_bus_mute(master_bus_index):
 		SoundButton.set_button_icon(icon_sound_off)
 	else:
 		SoundButton.set_button_icon(icon_sound_on)
+	
+	await get_tree().create_timer(.3).timeout
+	screen_block = false
+	
+
+
+# ------------------------------------------------------------
+# Sound button
+# ------------------------------------------------------------
+
 
 func _on_sound_button_pressed() -> void:
 	SoundButton.set_pivot_offset(SoundButton.size / 2)
@@ -66,6 +73,13 @@ func _on_sound_button_button_up() -> void:
 
 
 func _on_home_button_pressed() -> void:
+	# Prevent multiple clicks
+	print(screen_block)
+	if screen_block:
+		return
+	screen_block = true
+
+	
 	HomeButton.set_pivot_offset(HomeButton.size / 2)
 	HomeButton.scale = Vector2(.95, .95)
 	
@@ -99,6 +113,11 @@ func _on_home_button_pressed() -> void:
 
 
 func _on_home_button_button_down() -> void:
+	# Prevent multiple clicks
+	print(screen_block)
+	if screen_block:
+		return
+	
 	HomeButton.set_pivot_offset(HomeButton.size / 2)
 	HomeButton.scale = Vector2(.95, .95)
 	button_tapped = true
@@ -107,6 +126,11 @@ func _on_home_button_button_down() -> void:
 
 
 func _on_home_button_button_up() -> void:
+	# Prevent multiple clicks
+	print(screen_block)
+	if screen_block:
+		return
+
 	HomeButton.set_pivot_offset(HomeButton.size / 2)
 	HomeButton.scale = Vector2(1, 1)
 	button_tapped = false

@@ -1,13 +1,26 @@
 extends Control
 
+var touch_block: bool = false
+
 @onready var scene: Control = $title
 @onready var labels: Container = $MarginContainer
 @onready var HUD: Control = $"."
+@onready var score_txt_lbl: Label = $MarginContainer/VBoxContainer/LabelScore
+@onready var score_lbl: Label = $MarginContainer/VBoxContainer/BestScore
 
 # Notifies `game` node that the button has been pressed
 signal start_game
 
 func _ready() -> void:
+	score_lbl.hide()
+	var best_score: int = get_score()
+	if best_score > 0:
+		score_lbl.show()
+		var text: String = "Best score: "
+		var text_score: String = "%d" % best_score
+		score_txt_lbl.set_text(text)
+		score_lbl.set_text(text_score)
+	
 	$HomeMusic.play()
 	appear_animation()
 	$title/StartButton.button_down.connect(_on_StartButton_pressed)
@@ -29,15 +42,33 @@ func appear_animation() -> void:
 
 
 func _on_StartButton_pressed() -> void:
+	# Prevent multiple clicks
+	if touch_block:
+		return
+	touch_block = true
+
 	$SoundTap.play()
 	var player: AnimationPlayer = find_child("AnimationPlayer",true) as AnimationPlayer
 	player.play("RESET")
 	await get_tree().create_timer(.5).timeout
 	start_game.emit()
+	touch_block = false
 
 
 func _on_button_pressed() -> void:
+	# Prevent multiple clicks
+	if touch_block:
+		return
+	touch_block = true
+
 	var player: AnimationPlayer = find_child("AnimationPlayer",true) as AnimationPlayer
 	player.play("RESET")
 	await get_tree().create_timer(.5).timeout
 	start_game.emit()
+
+
+func get_score() -> int:
+	var score_config = ConfigFile.new()
+	score_config.load("user://scores.cfg")
+	var val = score_config.get_value("player","best_score", 0)
+	return val

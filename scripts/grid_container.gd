@@ -11,9 +11,9 @@ extends GridContainer
 @export var patterns: Array[PackedVector2Array]
 
 # Pattens for possible matches:
-	# Horizontal [(0, -1), (-1, -2)], [(0, -1), (1, -2)], [(0, 1), (-1, 2)], [(0, 1), (1, 2)]
-	# Vertical [(-1, 0), (-2, -1)], [(-1, 0), (-2, 1)], [(1, 0), (2, -1)], [(1, 0), (2, 1)]
-	# Offset horizontal [(0, 2), (-1, 1)], [(0, 2),(1, 1)], [(0, -2), (-1, -1)], [(0, -2), (1, -1)]
+	# Horizontal [(0, -1), (-1, -2)], [(0, -1), (1, -2)], [(0, -1), (0, -3)], [(0, 1), (-1, 2)], [(0, 1), (1, 2)], [(0, 1), (0, 3)]
+	# Vertical [(-1, 0), (-2, -1)], [(-1, 0), (-2, 1)], [(-1, 0), (-3, 0)], [(1, 0), (2, -1)], [(1, 0), (2, 1)], [(1, 0), (3, 0)]
+	# Offset horizontal [(0, -2), (-1, -1)], [(0, -2),(1, -1)], [(0, 2), (-1, 1)], [(0, 2), (1, 1)]
 	# Offset vertical [(-2, 0), (-1, -1)], [(-2, 0),(-1, 1)], [(2, 0), (1, -1)], [(2, 0), (1, 1)]
 @export var possible_matches_patterns: Array[PackedVector2Array]
 
@@ -28,7 +28,6 @@ var board_block: bool = false
 
 # Game score
 var score: int = 0
-var provide_score: bool = false
 
 # Dictionary of items' dictionaries
 var board = Dictionary()
@@ -99,22 +98,27 @@ func start() -> void:
 	create_board()
 	populate_tiles_on_board()
 	populate_items_on_board()
+	$"../../../../Sound_hoot_small".play()
+	print("Play hoot small")
 	
 	# Recreate board if no match
-	while not search_possible_matches():
-		$"../../../../Sound_shuffle".play()
-				
-		# Play error animation
-		for row: int in range(self.columns):
-			for column: int in range(height):
-				var item = board[row][column]
-				item.anim_item_error()
-				
-		await get_tree().create_timer(.5).timeout
-		clear_items_on_board()
-		populate_items_on_board()
+	#while not search_possible_matches():
+		#board_block = true
+		#$"../../../../Sound_shuffle".play()
+				#
+		## Play error animation
+		#for row: int in range(self.columns):
+			#for column: int in range(height):
+				#var item = board[row][column]
+				#item.anim_item_error()
+				#
+		#await get_tree().create_timer(.8).timeout
+		#clear_items_on_board(false)
+		#populate_items_on_board()
+		#$"../../../../Sound_hoot_small".play()
+		#print("Play hoot small")
 	
-	provide_score = false
+	board_block = false
 
 
 # Check block status every frame
@@ -139,20 +143,20 @@ func clear_board() -> void:
 
 
 # Clear items on board
-func clear_items_on_board() -> void:
+func clear_items_on_board(reset: bool = false) -> void:
 	if not board.is_empty():
 		for tile in get_children():
 			var temp_holder = tile.find_child("holder")
 			for child in temp_holder.get_children():
 				child.queue_free()
-	if not provide_score:
+	if reset:
 		reset_score()
 	last_tile = null
 
 
 # Initialize the board 2D array
 func create_board() -> void:
-	clear_items_on_board()
+	clear_items_on_board(true)
 	
 	# Create board
 	for x: int in range(self.columns):
@@ -197,13 +201,18 @@ func populate_items_on_board():
 			
 			# Create item
 			temp_item.create_item(m3item, x, y, true)
-			$"../../../../Sound_hoot_small".play()
+			
 			# Continue to change item if there is a match
 			var loops: int = 0
 			while match_at(x, y, temp_item.get_color()) and loops < 100:
 				m3item = item_scene.pick_random()
 				temp_item.create_item(m3item, x, y, true)
 				loops += 1
+			
+	# Recreate board if no match
+	while not search_possible_matches():
+		clear_items_on_board(false)
+		populate_items_on_board()
 
 
 # ------------------------------------------------------------
@@ -220,8 +229,8 @@ func swap_check(a: TileBg, b: TileBg) -> void:
 	print("b: ", b.x_pos, ", ", b.y_pos)
 
 	# Run swap
-	swap(a, b)
-	await get_tree().create_timer(1).timeout
+	await swap(a, b)
+	await get_tree().create_timer(.6).timeout
 
 	# Check match
 	if not match_at(a.x_pos, a.y_pos, a.get_color()) and not match_at(b.x_pos, b.y_pos, b.get_color()):
@@ -232,6 +241,26 @@ func swap_check(a: TileBg, b: TileBg) -> void:
 
 	# Check board
 	await update_matches()
+	
+	# Search for possible matches
+	while not search_possible_matches():
+		# Wait for animations
+		await get_tree().create_timer(.5).timeout
+				
+		# Play error animation
+		$"../../../../Sound_shuffle".play()
+		for row: int in range(self.columns):
+			for column: int in range(height):
+				var item = board[row][column]
+				item.anim_item_error()
+		await get_tree().create_timer(.8).timeout
+					
+		# Create new board
+		clear_items_on_board(false)
+		populate_items_on_board()
+		$"../../../../Sound_hoot_small".play()
+		print("Play hoot small")
+	
 	board_block = false
 
 
@@ -299,6 +328,7 @@ func touch_process(tile: TileBg) -> void:
 		selected = true
 		selected_tile = tile
 		$"../../../../Sound_hoot_small".play()
+		print("Play hoot small")
 		last_tile = tile
 
 
@@ -411,26 +441,12 @@ func update_matches() -> bool:
 			var tile: TileBg = board[board.size()-1][y]
 			create_top_tiles(tile)
 		
+		$"../../../../Sound_hoot_small".play()
+		print("Play hoot small")
+		
 		await get_tree().create_timer(.3).timeout
 		
-		# Search for possible matches
-		while not search_possible_matches():
-			provide_score = true
-			# Wait for animations
-			await get_tree().create_timer(.3).timeout
-				
-			# Play error animation
-			$"../../../../Sound_shuffle".play()
-			for row: int in range(self.columns):
-				for column: int in range(height):
-					var item = board[row][column]
-					item.anim_item_error()
-			await get_tree().create_timer(.5).timeout
-					
-			# Create new board
-			clear_items_on_board()
-			populate_items_on_board()
-			#return false
+		
 		return await update_matches()
 	return true
 
@@ -464,7 +480,6 @@ func create_top_tiles(tile:TileBg) -> void:
 		if tile_new.get_item() == null:
 			var m3item: PackedScene = item_scene.pick_random()
 			tile_new.create_item(m3item, item, tile.y_pos, true)
-			$"../../../../Sound_hoot_small".play()
 	await get_tree().create_timer(.3).timeout
 
 
@@ -518,10 +533,23 @@ func increase_score() -> void:
 
 
 func reset_score() -> void:
+	save_best_score()
 	score = 0
 	var text: String = "%d" % score
 	score_lbl.set_text(text)
 
+
+func save_best_score() -> void:
+	var score_config = ConfigFile.new()
+	score_config.load("user://scores.cfg")
+	var val = score_config.get_value("player","best_score", 0)
+	if score > val:
+		score_config.set_value("player","best_score", score)
+		score_config.save("user://scores.cfg")
+
+
+func _exit_tree() -> void:
+	save_best_score()
 
 # ------------------------------------------------------------
 # DEBUG BLOCK
@@ -531,7 +559,7 @@ func reset_score() -> void:
 # DEBUG block on/off
 func block_lbl_on(state: bool) -> void:
 	if debug_mode:
-		$"../../../../BlockLabel".show()
+		block_lbl.show()
 		var text: String = "Block: on"
 		if not state:
 			text = "Block: off"

@@ -109,7 +109,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 120
-theme_override_constants/margin_top = 200
+theme_override_constants/margin_top = 240
 theme_override_constants/margin_right = 120
 theme_override_constants/margin_bottom = 120
 
@@ -118,6 +118,7 @@ layout_mode = 2
 theme_override_constants/separation = 60
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="ScoreContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -251,7 +252,7 @@ script = ExtResource("13_1a5qc")
 item_scene = Array[PackedScene]([ExtResource("14_fmjc7"), ExtResource("15_jm5q8"), ExtResource("16_eivqe"), ExtResource("17_ecmbp"), ExtResource("18_mmcoy")])
 tileBG = ExtResource("19_jeykt")
 patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, 0, -2), PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0)])
-possible_matches_patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, -1, -2), PackedVector2Array(0, -1, 1, -2), PackedVector2Array(0, 1, -1, 2), PackedVector2Array(0, 1, 1, 2), PackedVector2Array(-1, 0, -2, -1), PackedVector2Array(-1, 0, -2, 1), PackedVector2Array(0, 1, -1, 2), PackedVector2Array(0, 1, 1, 2), PackedVector2Array(0, 2, -1, 1), PackedVector2Array(0, 2, 1, 1), PackedVector2Array(0, -2, -1, -1), PackedVector2Array(0, -2, 1, -1), PackedVector2Array(-2, 0, -1, -1), PackedVector2Array(-2, 0, -1, 1), PackedVector2Array(2, 0, 1, -1), PackedVector2Array(2, 0, 1, 1)])
+possible_matches_patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, -1, -2), PackedVector2Array(0, -1, 1, -2), PackedVector2Array(0, -1, 0, -3), PackedVector2Array(0, 1, -1, 2), PackedVector2Array(0, 1, 1, 2), PackedVector2Array(0, 1, 0, 3), PackedVector2Array(-1, 0, -2, -1), PackedVector2Array(-1, 0, -2, 1), PackedVector2Array(-1, 0, -3, 0), PackedVector2Array(1, 0, 2, -1), PackedVector2Array(1, 0, 2, 1), PackedVector2Array(1, 0, 3, 0), PackedVector2Array(0, -2, -1, -1), PackedVector2Array(0, -2, 1, -1), PackedVector2Array(0, 2, -1, 1), PackedVector2Array(0, 2, 1, 1), PackedVector2Array(-2, 0, -1, -1), PackedVector2Array(-2, 0, -1, 1), PackedVector2Array(2, 0, 1, -1), PackedVector2Array(2, 0, 1, 1)])
 score_lbl = NodePath("../../../../MarginContainer/VBoxContainer/ScoreContainer/Score")
 block_lbl = NodePath("../../../../MarginContainer/VBoxContainer/ScoreContainer/BlockLabel")
 
