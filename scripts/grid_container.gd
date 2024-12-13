@@ -5,7 +5,7 @@ extends GridContainer
 # Item holder
 @export var tileBG: PackedScene
 # Board rows
-@export var height: int = 5
+@export var height: int = 7
 
 # Patterns for board check: [[(0, -1), (0, -2)], [(-1, 0), (1, 0)], [(0, -1), (0, 1)], [(1, 0), (2, 0)], [(0, 1), (0, 2)], [(-1, 0), (-2, 0)]]
 @export var patterns: Array[PackedVector2Array]
@@ -100,23 +100,6 @@ func start() -> void:
 	populate_items_on_board()
 	$"../../../../Sound_hoot_small".play()
 	print("Play hoot small")
-	
-	# Recreate board if no match
-	#while not search_possible_matches():
-		#board_block = true
-		#$"../../../../Sound_shuffle".play()
-				#
-		## Play error animation
-		#for row: int in range(self.columns):
-			#for column: int in range(height):
-				#var item = board[row][column]
-				#item.anim_item_error()
-				#
-		#await get_tree().create_timer(.8).timeout
-		#clear_items_on_board(false)
-		#populate_items_on_board()
-		#$"../../../../Sound_hoot_small".play()
-		#print("Play hoot small")
 	
 	board_block = false
 

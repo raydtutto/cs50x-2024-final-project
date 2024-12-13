@@ -231,6 +231,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="TextureRect" type="Sprite2D" parent="VBoxContainer/HBoxContainer/Board"]
+visible = false
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("12_7uwgi")
 
@@ -251,6 +252,7 @@ columns = 5
 script = ExtResource("13_1a5qc")
 item_scene = Array[PackedScene]([ExtResource("14_fmjc7"), ExtResource("15_jm5q8"), ExtResource("16_eivqe"), ExtResource("17_ecmbp"), ExtResource("18_mmcoy")])
 tileBG = ExtResource("19_jeykt")
+height = 5
 patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, 0, -2), PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0)])
 possible_matches_patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, -1, -2), PackedVector2Array(0, -1, 1, -2), PackedVector2Array(0, -1, 0, -3), PackedVector2Array(0, 1, -1, 2), PackedVector2Array(0, 1, 1, 2), PackedVector2Array(0, 1, 0, 3), PackedVector2Array(-1, 0, -2, -1), PackedVector2Array(-1, 0, -2, 1), PackedVector2Array(-1, 0, -3, 0), PackedVector2Array(1, 0, 2, -1), PackedVector2Array(1, 0, 2, 1), PackedVector2Array(1, 0, 3, 0), PackedVector2Array(0, -2, -1, -1), PackedVector2Array(0, -2, 1, -1), PackedVector2Array(0, 2, -1, 1), PackedVector2Array(0, 2, 1, 1), PackedVector2Array(-2, 0, -1, -1), PackedVector2Array(-2, 0, -1, 1), PackedVector2Array(2, 0, 1, -1), PackedVector2Array(2, 0, 1, 1)])
 score_lbl = NodePath("../../../../MarginContainer/VBoxContainer/ScoreContainer/Score")
