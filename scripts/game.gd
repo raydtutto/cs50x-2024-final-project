@@ -17,4 +17,3 @@ func new_game() -> void:
 	
 	# Miscellaneous
 	$HUD.hide()
-	#$Music.play()

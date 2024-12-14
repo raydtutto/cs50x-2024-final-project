@@ -1,6 +1,9 @@
 extends GridContainer
 
-@onready var main_scene: Control = $"../../../../.."
+# Main node
+@export var parent_node: Control
+
+# Sounds
 var sound_hoot_small: AudioStreamPlayer
 var sound_hoot: AudioStreamPlayer
 var sound_trumpet: AudioStreamPlayer
@@ -13,6 +16,7 @@ var sound_shuffle: AudioStreamPlayer
 @export var tileBG: PackedScene
 # Board rows
 @export var height: int = 7
+var scale_changed = false
 
 # Patterns for board check: [[(0, -1), (0, -2)], [(-1, 0), (1, 0)], [(0, -1), (0, 1)], [(1, 0), (2, 0)], [(0, 1), (0, 2)], [(-1, 0), (-2, 0)]]
 @export var patterns: Array[PackedVector2Array]
@@ -24,8 +28,6 @@ var sound_shuffle: AudioStreamPlayer
 	# Offset vertical [(-2, 0), (-1, -1)], [(-2, 0),(-1, 1)], [(2, 0), (1, -1)], [(2, 0), (1, 1)]
 @export var possible_matches_patterns: Array[PackedVector2Array]
 
-# Buttons
-#@export var restart_btn: Button
 # Labels
 @export var score_lbl: Label
 
@@ -94,36 +96,63 @@ func _ready() -> void:
 	assert(block_lbl)
 	
 	# Sound preparation
-	sound_hoot = main_scene.find_child("Sound_hoot",true,false) as AudioStreamPlayer
-	sound_hoot_small = main_scene.find_child("Sound_hoot_small",true,false) as AudioStreamPlayer
-	sound_trumpet = main_scene.find_child("Sound_trumpet",true,false) as AudioStreamPlayer
-	sound_error = main_scene.find_child("Sound_error",true,false) as AudioStreamPlayer
-	sound_shuffle = main_scene.find_child("Sound_shuffle",true,false) as AudioStreamPlayer
+	sound_hoot = parent_node.find_child("Sound_hoot",true,false) as AudioStreamPlayer
+	sound_hoot_small = parent_node.find_child("Sound_hoot_small",true,false) as AudioStreamPlayer
+	sound_trumpet = parent_node.find_child("Sound_trumpet",true,false) as AudioStreamPlayer
+	sound_error = parent_node.find_child("Sound_error",true,false) as AudioStreamPlayer
+	sound_shuffle = parent_node.find_child("Sound_shuffle",true,false) as AudioStreamPlayer
+	
+	# Check board size
+	if (columns > 7 or columns < 3) or (height < 3 or height > 7):
+		print("Board size must be between 3x3 and 7x7")
+		return
 
 	# Run the game
 	start()
 
 # Start
 func start() -> void:
+	
 	# Create board
 	clear_board()
 	create_board()
 	populate_tiles_on_board()
 	populate_items_on_board()
 	sound_hoot_small.play()
-	print("Play hoot small")
-	
+
+	# Unblock screen
 	board_block = false
 
 
-# Check block status every frame
+# Works every frame
 func _process(_dt) -> void:
-	block_lbl_on(board_block)
+	# Scale board after creation
+	scale_board()
+	# Check block status every frame
+	if debug_mode:
+		block_lbl_on(board_block)
 
 
 # ------------------------------------------------------------
 # CREATE BOARD
 # ------------------------------------------------------------
+
+
+# Scale board
+func scale_board() -> void:
+	# Scale only one time
+	if scale_changed:
+		return
+	
+	scale_changed = true
+	if columns <= 5:
+		set_pivot_offset(size / 2)
+		scale = Vector2(1.2, 1.2)
+	elif columns == 6:
+		set_pivot_offset(size / 2)
+		scale = Vector2(1.1, 1.1)
+	elif columns == 7:
+		scale = Vector2(1, 1)
 
 
 # Clear board
@@ -301,12 +330,12 @@ func touch_process(tile: TileBg) -> void:
 		return
 
 	# Return if last tile already exist and last tile isn't tile
-	if (last_tile 
-	and last_tile != tile 
-	and ((last_tile.x_pos + 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) 
-	or (last_tile.x_pos - 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) 
-	or (last_tile.y_pos + 1 == tile.y_pos && last_tile.x_pos == tile.x_pos) 
-	or (last_tile.y_pos - 1 == tile.y_pos && last_tile.x_pos == tile.x_pos))):
+	var is_last_exists = (last_tile and last_tile != tile 
+		and ((last_tile.x_pos + 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) 
+		or (last_tile.x_pos - 1 == tile.x_pos && last_tile.y_pos == tile.y_pos) 
+		or (last_tile.y_pos + 1 == tile.y_pos && last_tile.x_pos == tile.x_pos) 
+		or (last_tile.y_pos - 1 == tile.y_pos && last_tile.x_pos == tile.x_pos)))
+	if is_last_exists:
 		var item = last_tile
 		last_tile = null
 		selected = false
@@ -441,7 +470,6 @@ func update_matches() -> bool:
 		
 		await get_tree().create_timer(.3).timeout
 		
-		
 		return await update_matches()
 	return true
 
@@ -496,18 +524,27 @@ func search_possible_matches() -> bool:
 	# Check all tiles within board
 	for x: int in range(height):
 		for y: int in range(self.columns):
+			
 			# Check patterns for current tile
 			var color = board[x][y].get_color()
 			for pattern in possible_matches_patterns:
 				assert(possible_matches_patterns.size() > 0, "No patterns")
+				
+				# Get pattern size
 				var size: int = pattern.size()
 				for search in pattern:
+					
+					# Set next item position
 					var next_x: int = x + search.x
 					var next_y: int = y + search.y
+					
+					# Check tile existence before comparing
 					if board.has(next_x):
 						if board[next_x].has(next_y):
 							if board[next_x][next_y] != null && board[next_x][next_y].get_color() == color:
 								size -= 1
+				
+				# Return when match exist
 				if size == 0:
 					print("Matches exist at ", x, ", ", y)
 					return true
@@ -522,27 +559,54 @@ func search_possible_matches() -> bool:
 
 
 func increase_score() -> void:
+	# Update score value
 	score += 1
+	
+	# Update text
 	var text: String = "%d" % score
 	score_lbl.set_text(text)
+	
+	# Set score boundaries
+	if score > 999999999:
+		var max_score: String = "∞"
+		score_lbl.set_text(max_score)
 
 
 func reset_score() -> void:
 	save_best_score()
+	
+	# Update score value
 	score = 0
+	
+	# Update text
 	var text: String = "%d" % score
 	score_lbl.set_text(text)
 
 
 func save_best_score() -> void:
+	# Create new ConfigFile object
 	var score_config = ConfigFile.new()
+	
+	# Load data from a file
 	score_config.load("user://scores.cfg")
+	
+	# Get value from data
 	var val = score_config.get_value("player","best_score", 0)
+	
+	# Update file
 	if score > val:
+		# Max score
+		if score > 999999999:
+			score_config.set_value("player","best_score", 999999999)
+			score_config.save("user://scores.cfg")
+			return
+
+		# Best score
 		score_config.set_value("player","best_score", score)
 		score_config.save("user://scores.cfg")
 
 
+# Save best score on exit
 func _exit_tree() -> void:
 	save_best_score()
 
@@ -556,6 +620,8 @@ func block_lbl_on(state: bool) -> void:
 	if debug_mode:
 		block_lbl.show()
 		var text: String = "Block: on"
+		
+		# Update text
 		if not state:
 			text = "Block: off"
 			block_lbl.set_text(text)

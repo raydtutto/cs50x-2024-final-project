@@ -1,8 +1,12 @@
 extends Control
+
+# Tile class
 class_name TileBg
 
 # Item node
 var m3item: Control
+
+# Item background
 @export var m3item_bg: PackedScene
 
 signal on_touch
@@ -28,6 +32,8 @@ var pressed: bool = false
 func _gui_input(event: InputEvent) -> void:
 	# Tap or click
 	if event is InputEventMouseButton:
+		if event.button_index != 1:
+			return
 		if event.is_pressed():
 			pressed = true
 			start_mouse_position = event.position
@@ -40,19 +46,19 @@ func _gui_input(event: InputEvent) -> void:
 
 	# Swipe
 	elif event is InputEventMouseMotion and pressed:
-		# Swipe to right
+		# Swipe right
 		if event.position.x > start_mouse_position.x + 25:
 			pressed = false
 			on_swipe.emit(self, ItemProp.Touch.RIGHT)
-		# Swipe to left
+		# Swipe left
 		elif event.position.x < start_mouse_position.x - 25:
 			pressed = false
 			on_swipe.emit(self, ItemProp.Touch.LEFT)
-		# Swipe to down
+		# Swipe down
 		elif event.position.y > start_mouse_position.y + 25:
 			pressed = false
 			on_swipe.emit(self, ItemProp.Touch.DOWN)
-		# Swipe to up
+		# Swipe up
 		elif event.position.y < start_mouse_position.y - 25:
 			pressed = false
 			on_swipe.emit(self, ItemProp.Touch.UP)
@@ -125,7 +131,6 @@ func set_select(value: bool) -> void:
 func get_color() -> ItemProp.ItemTypes:
 	if m3item:
 		return m3item.color
-	#print("Color is unknown")
 	return ItemProp.ItemTypes.UNKNOWN
 
 
@@ -160,9 +165,6 @@ func anim_start_move(prev_pos:Vector2, next_pos:Vector2) -> void:
 			tween.tween_property(m3item, "position", next_pos, .6).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 			tween.play()
 			return
-		tween.tween_property(m3item, "position", next_pos, .5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
-		tween.play()
-		return
 
 	# Animation for one row
 	tween.tween_property(m3item, "position", next_pos, .5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)

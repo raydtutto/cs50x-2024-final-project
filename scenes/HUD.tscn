@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://ba08pmea075p4" path="res://assets/sprites/items/yellow.png" id="2_2stxc"]
 [ext_resource type="FontFile" uid="uid://ct2dhx0t8ryp" path="res://assets/fonts/Inter_24pt-Black.ttf" id="2_ov63u"]
 [ext_resource type="FontFile" uid="uid://d1vxjc8lhjbsa" path="res://assets/fonts/Inter_18pt-Light.ttf" id="4_2silk"]
-[ext_resource type="AudioStream" uid="uid://ddolfchctyhs8" path="res://assets/music/Awkward_-_www.fesliyanstudios.com.mp3" id="5_w2bro"]
+[ext_resource type="AudioStream" uid="uid://dnbkl74xljh8h" path="res://assets/music/Awkward_-_www.fesliyanstudios.com.ogg" id="5_hfrdm"]
 [ext_resource type="AudioStream" uid="uid://bwbypge8el5l" path="res://assets/sounds/6_tap.mp3" id="6_awrxb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aeqbj"]
@@ -295,9 +295,8 @@ libraries = {
 }
 
 [node name="HomeMusic" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_w2bro")
+stream = ExtResource("5_hfrdm")
 volume_db = -10.0
-parameters/looping = true
 
 [node name="SoundTap" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_awrxb")

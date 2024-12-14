@@ -17,6 +17,7 @@ func _ready() -> void:
 	labels = main_scene.find_child("MarginContainer",true,false) as Container
 	score_txt_lbl = main_scene.find_child("LabelScore",true,false) as Label
 	score_lbl = main_scene.find_child("BestScore",true,false) as Label
+	$title/StartButton.button_down.connect(_on_StartButton_pressed)
 	
 	# Show best score or placeholder
 	score_lbl.hide()
@@ -28,24 +29,34 @@ func _ready() -> void:
 		score_txt_lbl.set_text(text)
 		score_lbl.set_text(text_score)
 	
+	# Animation on load
 	$HomeMusic.play()
 	appear_animation()
-	$title/StartButton.button_down.connect(_on_StartButton_pressed)
 	var player: AnimationPlayer = find_child("AnimationPlayer",true) as AnimationPlayer
 	player.play("blink")
+	
+
+func _process(delta: float) -> void:
+	if not $HomeMusic.is_playing():
+		$HomeMusic.play()
 
 
+# Load animation
 func appear_animation() -> void:
 	var fade_in: Tween = get_tree().create_tween()
-	var scale: Tween = get_tree().create_tween()
+	var scale_node: Tween = get_tree().create_tween()
 	var fade_in_labels: Tween = get_tree().create_tween()
 	scene.modulate = Color(1, 1, 1, 0)
 	labels.modulate = Color(1, 1, 1, 0)
 	scene.set_pivot_offset(scene.size / 2)
 	scene.scale = Vector2(.9, .9)
-	scale.tween_property(scene, "scale", Vector2(1,1), .5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
+	scale_node.tween_property(scene, "scale", Vector2(1,1), .5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 	fade_in.tween_property(scene, "modulate", Color(1,1,1,1), .3).set_ease(Tween.EASE_IN)
 	fade_in_labels.tween_property(labels, "modulate", Color(1,1,1,1), .3).set_ease(Tween.EASE_IN)
+	
+	scale_node.play()
+	fade_in.play()
+	fade_in_labels.play()
 
 
 func _on_StartButton_pressed() -> void:
@@ -74,6 +85,7 @@ func _on_button_pressed() -> void:
 	start_game.emit()
 
 
+# Best score
 func get_score() -> int:
 	var score_config = ConfigFile.new()
 	score_config.load("user://scores.cfg")

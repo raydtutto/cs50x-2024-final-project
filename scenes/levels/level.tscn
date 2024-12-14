@@ -119,7 +119,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/Board" node_paths=PackedStringArray("score_lbl", "block_lbl")]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/Board" node_paths=PackedStringArray("parent_node", "score_lbl", "block_lbl")]
 layout_direction = 1
 layout_mode = 1
 anchors_preset = 8
@@ -132,10 +132,12 @@ grow_vertical = 2
 size_flags_horizontal = 4
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 7
+columns = 6
 script = ExtResource("13_1a5qc")
+parent_node = NodePath("../../..")
 item_scene = Array[PackedScene]([ExtResource("14_fmjc7"), ExtResource("15_jm5q8"), ExtResource("16_eivqe"), ExtResource("17_ecmbp"), ExtResource("18_mmcoy")])
 tileBG = ExtResource("19_jeykt")
+height = 6
 patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, 0, -2), PackedVector2Array(-1, 0, 1, 0), PackedVector2Array(0, -1, 0, 1), PackedVector2Array(1, 0, 2, 0), PackedVector2Array(0, 1, 0, 2), PackedVector2Array(-1, 0, -2, 0)])
 possible_matches_patterns = Array[PackedVector2Array]([PackedVector2Array(0, -1, -1, -2), PackedVector2Array(0, -1, 1, -2), PackedVector2Array(0, -1, 0, -3), PackedVector2Array(0, 1, -1, 2), PackedVector2Array(0, 1, 1, 2), PackedVector2Array(0, 1, 0, 3), PackedVector2Array(-1, 0, -2, -1), PackedVector2Array(-1, 0, -2, 1), PackedVector2Array(-1, 0, -3, 0), PackedVector2Array(1, 0, 2, -1), PackedVector2Array(1, 0, 2, 1), PackedVector2Array(1, 0, 3, 0), PackedVector2Array(0, -2, -1, -1), PackedVector2Array(0, -2, 1, -1), PackedVector2Array(0, 2, -1, 1), PackedVector2Array(0, 2, 1, 1), PackedVector2Array(-2, 0, -1, -1), PackedVector2Array(-2, 0, -1, 1), PackedVector2Array(2, 0, 1, -1), PackedVector2Array(2, 0, 1, 1)])
 score_lbl = NodePath("../../VBoxContainer/ScoreContainer/Score")
@@ -161,7 +163,7 @@ vertical_alignment = 1
 [node name="Score" type="Label" parent="MarginContainer/VBoxContainer/ScoreContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_007wd")
-theme_override_font_sizes/font_size = 150
+theme_override_font_sizes/font_size = 120
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
