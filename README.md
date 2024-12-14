@@ -1,4 +1,4 @@
-# CS50x 2024 Final project / Match3
+# Endless Match3
 
 ### Description:
 
