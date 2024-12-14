@@ -12,13 +12,9 @@ Gameplay Video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
 
 ![cs50-fp-match3.gif](doc/cs50-fp-match3.gif)
 
----
-
 ## 🛠️ Installation
 1. Visit the game’s [itch.io page](https://raydtutto.itch.io/cs50x-fp-match3).
 2. Play directly in your browser (desktop or mobile) or download the game files.
-
----
 
 ## 🦆 How to Play
 1. Start the game from the Homepage:
@@ -28,8 +24,6 @@ Gameplay Video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
     - Swap adjacent tiles by clicking, dragging, or swiping to form matches of three or more.
     - Clear matches to score points while new tiles fall into place.
 3. Aim to achieve the highest score possible!
-
----
 
 ## ✨ Key Features
 
@@ -62,20 +56,14 @@ Gameplay Video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
 - Shuffles the board if no possible matches are available.
 - Once the maximum score is reached, further score updates are disabled.
 
----
-
 ## ⚙️ Technologies Used
 - **[Godot Engine 4](https://godotengine.org/)** — a free and open-source game engine for creating 2D and 3D games.
 - **GDScript** — the scripting language used in Godot to implement game logic.
-
----
 
 ## 📁 Project Structure
 - **/assets**: Sprites, background music and sound effects.
 - **/scripts**: GDScript files for core game logic.
 - **/scenes**: Godot scene files for Homepage and Game Board.
-
----
 
 ## 🌈 Acknowledgments
 - [**CS50 team**](https://cs50.harvard.edu/x/2024/): For offering an exceptional introduction to computer science and programming.
@@ -88,12 +76,10 @@ Gameplay Video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
   - Hi-Tech Error Alert 1 by miksmusic -- https://freesound.org/s/497710/ -- License: Attribution 3.0
   - tap.wav by supaFrycook2 -- https://freesound.org/s/242737/ -- License: Attribution 3.0
 
----
+This project is dedicated to CS50 Rubber Ducky. Quack!
 
 ## 📝 Feedback
 Your feedback is highly appreciated! Share your thoughts or report issues on the game’s [itch.io page](https://raydtutto.itch.io/cs50x-fp-match3).
-
----
 
 ## 📄 License
 This project is intended for educational purposes only. All code and artwork are original creations. Audio files are used under their respective licenses.
