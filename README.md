@@ -1,5 +1,7 @@
 # CS50x 2024 Final project / Match3
 
+### Description:
+
 This project is my [CS50x](https://cs50.harvard.edu/x/2024/) final submission: a simple yet engaging Match3 puzzle 
 game developed with the **Godot Engine** and written in **GDScript**. The game demonstrates the programming and 
 problem-solving skills I gained throughout the course.
@@ -8,7 +10,7 @@ problem-solving skills I gained throughout the course.
 - Match three or more tiles of the same type to score points.
 - Tiles fall into place after matches, with new tiles spawning to keep the board full.
 
-Gameplay Video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
+Gameplay video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
 
 ![cs50-fp-match3.gif](doc/cs50-fp-match3.gif)
 
@@ -65,6 +67,14 @@ Gameplay Video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
 - **/scripts**: GDScript files for core game logic.
 - **/scenes**: Godot scene files for Homepage and Game Board.
 
+## 📚 Resources
+- https://docs.godotengine.org
+- [Bitlytic](https://www.youtube.com/@Bitlytic)
+- [Brackeys](https://www.youtube.com/@Brackeys)
+- [CocoCode](https://www.youtube.com/@CocoCode)
+- [Godotneers](https://www.youtube.com/@godotneers)
+- [MisterTaftCreates](https://www.youtube.com/@MisterTaftCreates)
+
 ## 🌈 Acknowledgments
 - [**CS50 team**](https://cs50.harvard.edu/x/2024/): For offering an exceptional introduction to computer science and programming.
 - [**FesliyanStudios.com**](https://www.FesliyanStudios.com): For providing royalty-free music.
@@ -76,7 +86,7 @@ Gameplay Video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
   - Hi-Tech Error Alert 1 by miksmusic -- https://freesound.org/s/497710/ -- License: Attribution 3.0
   - tap.wav by supaFrycook2 -- https://freesound.org/s/242737/ -- License: Attribution 3.0
 
-This project is dedicated to CS50 Rubber Ducky. Quack!
+This project is dedicated to CS50 Rubber Ducky 🦆 Quack!
 
 ## 📝 Feedback
 Your feedback is highly appreciated! Share your thoughts or report issues on the game’s [itch.io page](https://raydtutto.itch.io/cs50x-fp-match3).
