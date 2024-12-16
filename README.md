@@ -2,15 +2,17 @@
 
 ### Description:
 
-This project is my [CS50x](https://cs50.harvard.edu/x/2024/) final submission: a simple yet engaging Match3 puzzle 
-game developed with the **Godot Engine** and written in **GDScript**. The game demonstrates the programming and 
+This project is my [CS50x](https://cs50.harvard.edu/x/2024/) final submission: a simple Match3 puzzle 
+game developed with the **Godot Engine 4.3** and written in **GDScript**. The game demonstrates the programming and 
 problem-solving skills I gained throughout the course.
 
 ### Classic gameplay
 - Match three or more tiles of the same type to score points.
 - Tiles fall into place after matches, with new tiles spawning to keep the board full.
 
-Gameplay video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
+### Links
+- Play the game on [itch.io](https://raydtutto.itch.io/cs50x-fp-match3)
+- Gameplay video on [YouTube](https://youtube.com/shorts/FJI9hOVIjZY).
 
 ![cs50-fp-match3.gif](doc/cs50-fp-match3.gif)
 
