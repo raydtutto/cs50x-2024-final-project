@@ -16,32 +16,26 @@ problem-solving skills I gained throughout the course.
 
 ![cs50-fp-match3.gif](doc/cs50-fp-match3.gif)
 
-## 🛠️ Installation
-1. Visit the game’s [itch.io page](https://raydtutto.itch.io/cs50x-fp-match3).
-2. Play directly in your browser (desktop or mobile) or download the game files.
-
 ## 🦆 How to Play
-1. Start the game from the Homepage:
+1. Launch the game directly in your browser from the [itch.io page](https://raydtutto.itch.io/cs50x-fp-match3):
     - Check your best score.
 2. On the Game Board:
-    - Toggle music on or off.
-    - Swap adjacent tiles by clicking, dragging, or swiping to form matches of three or more.
+    - Swap adjacent tiles by clicking or swiping to form matches of three or more.
     - Clear matches to score points while new tiles fall into place.
 3. Aim to achieve the highest score possible!
 
-## ✨ Key Features
+### Technologies Used
+- **[Godot Engine 4](https://godotengine.org/)** — a free and open-source game engine for creating 2D and 3D games.
+- **GDScript** — the scripting language used in Godot to implement game logic.
 
-### Scenes
-1. **Homepage**:
-    - Displays the best score.
-2. **Game Board**:
-    - Allows users to toggle background music on or off.
-    - Interactive tile-based gameplay with smooth animations.
-    - Ability to easily adjust height and columns through the engine without any hassle.
-
-### Controls
-- Compatible with both **mouse** (left-click only) and **touchscreen**.
-- Users can _swipe_ tiles on touchscreen devices or _click-and-drag_ on desktop.
+### Key Features
+- Ability to easily adjust height and columns through the engine without any hassle.
+- Prevents multiple simultaneous clicks.
+- Restricts interaction to left mouse clicks for desktops.
+- Disables board interaction during animations to ensure smooth gameplay.
+- Ensures the board is not generated without matches.
+- Shuffles the board if no possible matches are available.
+- Once the maximum score is reached, further score updates are disabled.
 
 ### Audio
 - Looped background music with a toggle option.
@@ -52,81 +46,75 @@ problem-solving skills I gained throughout the course.
 - Optimized for **iPhone**, **iPad**, and web browsers.
 - Fully resizable to support both vertical and horizontal orientations without breaking proportions.
 
-### User Experience
-- Prevents multiple simultaneous clicks.
-- Restricts interaction to left mouse clicks for desktops.
-- Disables board interaction during animations to ensure smooth gameplay.
-- Ensures the board is not generated without matches.
-- Shuffles the board if no possible matches are available.
-- Once the maximum score is reached, further score updates are disabled.
-
-## ⚙️ Technologies Used
-- **[Godot Engine 4](https://godotengine.org/)** — a free and open-source game engine for creating 2D and 3D games.
-- **GDScript** — the scripting language used in Godot to implement game logic.
-
 ## 📁 Project Structure
-- **/assets**: Sprites, fonts, background music and sound effects.
-- **/scenes**: Godot generated scene files for Homepage and Game Board.
-- **/scripts**: GDScript files for core game logic.
-- **project.godot**: Godot project.
-- **endless_match3.zip**: Archived project on the off-chance.
+- `/assets` Sprites, fonts, background music and sound effects.
+- `/scenes` Godot generated scene files for Homepage and Game Board.
+- `/scripts` GDScript files for core game logic.
+- `project.godot` Godot project.
+- `endless_match3.zip` Archived project on the off-chance.
 
-### Scenes
-- **/items**: 5 tile items with sprites inside.
-- **/levels**: Level scene with score, buttons and where board is generating itself.
-- **/tiles**: Tile white background.
-- **game.tscn**: The main project scene with level holder and the HUD scene inside.
-- **HUD.tscn**: Homepage scene, where user can start the game and view the score.
-- **tile_bg.tscn**: Tile background holder, that loads files from "/tiles".
+> <details>
+>  <summary>Scenes description</summary>
+>
+> - `/items` 5 tile scenes with sprites inside.
+> - `/levels` Level scene with score, buttons and where board is generating itself.
+> - `/tiles` Tile scene white background.
+> - `game.tscn` The main project scene with level holder and the HUD scene inside.
+> - `HUD.tscn` Homepage scene, where user can start the game and view the score.
+> - `tile_bg.tscn` Tile background holder, that loads files from "/tiles".
+> 
+> </details>
 
-### Scripts Description
-
-#### 1. `game.gd`
-**Purpose**: Manages the core gameplay mechanics, such as initializing the game board, handling tile swaps, checking for matches, updating scores, and refreshing the board with new tiles.
-
-**Key Details**:
-- Handles player interactions like taps and swipes.
-- Implements logic to detect and resolve matches.
-- Contains functions for updating the game state, animations for tile movement, and scoring.
-
-#### 2. `grid_container.gd`
-**Purpose**: Likely handles the organization and display of game tiles within a grid layout. This file might also ensure proper alignment and spacing of game items.
-
-**Key Details**:
-- Manages grid-based operations for tiles.
-- Could provide utility functions for layout or interaction purposes.
-
-#### 3. `HUD.gd`
-**Purpose**: Manages the Heads-Up Display, including user interface elements like the score display, buttons, and animations for transitions or notifications.
-
-**Key Details**:
-- Initializes UI components, such as labels and buttons.
-- Plays animations for appearing UI elements.
-- Emits signals to start the game and retrieves the best score from stored data.
-
-#### 4. `item_property.gd`
-**Purpose**: Defines enums and properties for items, such as color types and touch gestures. It acts as a data structure for item characteristics.
-
-**Key Details**:
-- Defines `ItemTypes` for color categorization (e.g., BLUE, GREEN, RED, YELLOW, VIOLET).
-- Enumerates touch directions for swipe interactions.
-- Provides reusable properties for game logic.
-
-#### 5. `item.gd`
-**Purpose**: Represents an individual game tile, including its appearance, position, and interaction logic. It also handles animations and touch-based input.
-
-**Key Details**:
-- Manages the creation of tile items and their placement on the board.
-- Detects and handles player interactions like taps and swipes.
-- Handles animations for item movement, appearance, and match confirmations.
-
-#### 6. `level.gd`
-**Purpose**: Controls the level-related logic, such as managing the board, buttons, and sound settings. Handles scene transitions and animations for level elements.
-
-**Key Details**:
-- Sets up and controls buttons like "Home" and "Sound."
-- Toggles audio settings and changes button icons.
-- Transitions back to the main menu when the home button is pressed.
+> <details>
+> <summary>Scripts description</summary>
+>
+> #### 1. `game.gd`
+> **Purpose**: Manages the core gameplay mechanics, such as initializing the game board, handling tile swaps, checking for matches, updating scores, and refreshing the board with new tiles.
+>
+> **Key Details**:
+> - Handles player interactions like taps and swipes.
+> - Implements logic to detect and resolve matches.
+> - Contains functions for updating the game state, animations for tile movement, and scoring.
+> 
+> #### 2. `grid_container.gd`
+> **Purpose**: Likely handles the organization and display of game tiles within a grid layout. This file might also ensure proper alignment and spacing of game items.
+>
+> **Key Details**:
+> - Manages grid-based operations for tiles.
+> - Could provide utility functions for layout or interaction purposes.
+>
+> #### 3. `HUD.gd`
+> **Purpose**: Manages the Heads-Up Display, including user interface elements like the score display, buttons, and animations for transitions or notifications.
+>
+> **Key Details**:
+> - Initializes UI components, such as labels and buttons.
+> - Plays animations for appearing UI elements.
+> - Emits signals to start the game and retrieves the best score from stored data.
+>
+> #### 4. `item_property.gd`
+> **Purpose**: Defines enums and properties for items, such as color types and touch gestures. It acts as a data structure for item characteristics.
+>
+> **Key Details**:
+> - Defines `ItemTypes` for color categorization (e.g., BLUE, GREEN, RED, YELLOW, VIOLET).
+> - Enumerates touch directions for swipe interactions.
+> - Provides reusable properties for game logic.
+>
+> #### 5. `item.gd`
+> **Purpose**: Represents an individual game tile, including its appearance, position, and interaction logic. It also handles animations and touch-based input.
+>
+> **Key Details**:
+> - Manages the creation of tile items and their placement on the board.
+> - Detects and handles player interactions like taps and swipes.
+> - Handles animations for item movement, appearance, and match confirmations.
+>
+> #### 6. `level.gd`
+> **Purpose**: Controls the level-related logic, such as managing the board, buttons, and sound settings. Handles scene transitions and animations for level elements.
+>
+> **Key Details**:
+> - Sets up and controls buttons like "Home" and "Sound."
+> - Toggles audio settings and changes button icons.
+> - Transitions back to the main menu when the home button is pressed.
+> </details>
 
 ## 📚 Resources
 - https://docs.godotengine.org
